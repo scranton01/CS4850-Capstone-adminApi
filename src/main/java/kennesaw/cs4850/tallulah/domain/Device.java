@@ -1,7 +1,10 @@
 package kennesaw.cs4850.tallulah.domain;
 
-/**
- * Created by Jun on 10/24/2016.
- */
+import lombok.Data;
+
+@Data
 public class Device {
+    int deviceid;
+    int owerid;
+    String name;
 }

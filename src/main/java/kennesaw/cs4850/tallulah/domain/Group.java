@@ -1,7 +1,14 @@
 package kennesaw.cs4850.tallulah.domain;
 
-/**
- * Created by Jun on 10/24/2016.
- */
+import lombok.Data;
+
+import java.util.List;
+
+@Data
 public class Group {
+    int groupid;
+    List<User> users;
+    List<Device> devices;
+    List<Group> channels;
+    List<Message> messages;
 }
