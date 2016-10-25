@@ -23,7 +23,7 @@ public class Controller {
 
     @RequestMapping(path = "/sample", method = RequestMethod.GET)
     public Sample sampleTest(){
-        return new Sample(999);
+        return new Sample(999,"John Smith");
     }
 
     @RequestMapping(path = groups, method = RequestMethod.POST)
