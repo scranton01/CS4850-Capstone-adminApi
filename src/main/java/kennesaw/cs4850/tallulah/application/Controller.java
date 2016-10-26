@@ -1,6 +1,7 @@
 package kennesaw.cs4850.tallulah.application;
 
 
+import kennesaw.cs4850.tallulah.domain.Repository;
 import kennesaw.cs4850.tallulah.domain.Sample;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,10 +21,12 @@ public class Controller {
     private static final String messages = "/apiadmin/1/groups/{groupid}/messages";
     private static final String messagesId = "/apiadmin/1/groups/{groupid}/messages/{messageid}";
 
+    private Repository repository;
+
 
     @RequestMapping(path = "/sample", method = RequestMethod.GET)
     public Sample sampleTest(){
-        return new Sample(999,"John Smith");
+        return repository.getSample();
     }
 
     @RequestMapping(path = groups, method = RequestMethod.POST)
