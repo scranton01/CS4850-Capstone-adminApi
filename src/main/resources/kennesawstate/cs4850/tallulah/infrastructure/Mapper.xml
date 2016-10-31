@@ -6,4 +6,14 @@
     <select id="getSample" resultType="kennesawstate.cs4850.tallulah.domain.Sample">
         SELECT ID, NAME  FROM SAMPLE WHERE ID = 999
     </select>
+    <insert id="createGroupId">
+        INSERT INTO GROUPS (GROUP_ID) VALUES(GROUP_SEQUENCE.NEXTVAL)
+    </insert>
+    <select id="findLatestGroupId" resultType="int">
+        SELECT MAX(GROUP_ID) FROM GROUPS
+    </select>
+    <select id="findAllGroupId" resultType="int">
+        SELECT GROUP_ID FROM GROUPS
+    </select>
+
 </mapper>

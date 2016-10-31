@@ -1,12 +1,21 @@
 package kennesawstate.cs4850.tallulah.application;
 
 
+import kennesawstate.cs4850.tallulah.application.Response.GroupId;
+import kennesawstate.cs4850.tallulah.application.Response.GroupIdList;
+import kennesawstate.cs4850.tallulah.application.Response.IdStatus;
 import kennesawstate.cs4850.tallulah.domain.Sample;
 import kennesawstate.cs4850.tallulah.domain.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class Controller {
@@ -31,18 +40,23 @@ public class Controller {
     }
 
     @RequestMapping(path = groups, method = RequestMethod.POST)
-    public String createGroup() {
-        return "success";
+    public ResponseEntity<IdStatus> createGroup() {
+        IdStatus idStatus = new IdStatus(service.createGroupId(), "create was successful.");
+        return new ResponseEntity<>(idStatus, HttpStatus.CREATED);
     }
 
     @RequestMapping(path = groups, method = RequestMethod.GET)
-    public void findGroups() {
-
+    public ResponseEntity<GroupIdList> findGroups() {
+        List<Integer> groupIdListInt = service.findAllGroupId();
+        List<GroupId> groups = new ArrayList<>();
+        groupIdListInt.forEach(i -> groups.add(new GroupId(i)));
+        return new ResponseEntity<>(new GroupIdList(groups), HttpStatus.OK);
     }
 
     @RequestMapping(path = groupsId, method = RequestMethod.DELETE)
-    public void deleteGroupBy() {
+    public ResponseEntity<IdStatus> deleteGroupBy(@PathVariable("groupid") int groupid) {
 
+        return null;
     }
 
     @RequestMapping(path = groupsId, method = RequestMethod.GET)
