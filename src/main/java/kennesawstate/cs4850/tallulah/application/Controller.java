@@ -1,8 +1,9 @@
-package kennesaw.cs4850.tallulah.application;
+package kennesawstate.cs4850.tallulah.application;
 
 
-import kennesaw.cs4850.tallulah.domain.Repository;
-import kennesaw.cs4850.tallulah.domain.Sample;
+import kennesawstate.cs4850.tallulah.domain.Sample;
+import kennesawstate.cs4850.tallulah.domain.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,12 +22,12 @@ public class Controller {
     private static final String messages = "/apiadmin/1/groups/{groupid}/messages";
     private static final String messagesId = "/apiadmin/1/groups/{groupid}/messages/{messageid}";
 
-    private Repository repository;
-
+    @Autowired
+    private Service service;
 
     @RequestMapping(path = "/sample", method = RequestMethod.GET)
-    public Sample sampleTest(){
-        return repository.getSample();
+    public Sample sampleTest() {
+        return service.getSample();
     }
 
     @RequestMapping(path = groups, method = RequestMethod.POST)
@@ -105,42 +106,42 @@ public class Controller {
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.DELETE)
-    public void deleteChannel(){
+    public void deleteChannel() {
 
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.PUT)
-    public void updateChannel(){
+    public void updateChannel() {
 
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.GET)
-    public void findChannelBy(){
+    public void findChannelBy() {
 
     }
 
     @RequestMapping(path = messages, method = RequestMethod.POST)
-    public void createMessage(){
+    public void createMessage() {
 
     }
 
     @RequestMapping(path = messages, method = RequestMethod.GET)
-    public void findMessages(){
+    public void findMessages() {
 
     }
 
     @RequestMapping(path = messagesId, method = RequestMethod.DELETE)
-    public void deleteMessageBy(){
+    public void deleteMessageBy() {
 
     }
 
     @RequestMapping(path = messagesId, method = RequestMethod.PUT)
-    public void updateMessageBy(){
+    public void updateMessageBy() {
 
     }
 
     @RequestMapping(path = messagesId, method = RequestMethod.GET)
-    public void findMessageBy(){
+    public void findMessageBy() {
 
     }
 }

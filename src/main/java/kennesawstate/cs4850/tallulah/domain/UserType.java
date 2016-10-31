@@ -1,4 +1,4 @@
-package kennesaw.cs4850.tallulah.domain;
+package kennesawstate.cs4850.tallulah.domain;
 
 /**
  * Created by Jun on 10/25/2016.

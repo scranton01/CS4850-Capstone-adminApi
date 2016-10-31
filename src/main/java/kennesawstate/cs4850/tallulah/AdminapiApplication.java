@@ -1,11 +1,15 @@
-package kennesaw.cs4850.tallulah;
+package kennesawstate.cs4850.tallulah;
 
-import kennesaw.cs4850.tallulah.infrastructure.Mapper;
+import kennesawstate.cs4850.tallulah.infrastructure.Mapper;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
+
 @SpringBootApplication
+@MapperScan("Mapper")
 public class AdminapiApplication {
 
 	@Autowired

@@ -1,4 +1,4 @@
-package kennesaw.cs4850.tallulah.domain;
+package kennesawstate.cs4850.tallulah.domain;
 
 
 public class Channel {

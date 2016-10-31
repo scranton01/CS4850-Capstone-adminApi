@@ -1,4 +1,4 @@
-package kennesaw.cs4850.tallulah;
+package kennesawstate.cs4850.tallulah;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

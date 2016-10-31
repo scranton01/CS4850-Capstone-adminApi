@@ -1,10 +1,12 @@
-package kennesaw.cs4850.tallulah.domain;
+package kennesawstate.cs4850.tallulah.domain;
 
 
-import kennesaw.cs4850.tallulah.infrastructure.InfraService;
+import kennesawstate.cs4850.tallulah.infrastructure.InfraService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@org.springframework.stereotype.Service
 public class Service implements Repository {
+
     @Autowired
     private InfraService infraService;
 
