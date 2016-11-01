@@ -10,4 +10,5 @@ public interface Mapper {
     void createGroupId();
     int findLatestGroupId();
     List<Integer> findAllGroupId();
+    int deleteGroupBy(int groupId);
 }

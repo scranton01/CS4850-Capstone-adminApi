@@ -6,5 +6,5 @@ public interface Repository {
     Sample getSample();
     Integer createGroupId();
     List<Integer> findAllGroupId();
-    Integer deleteGroupBy();
+    Integer deleteGroupBy(int groupId);
 }

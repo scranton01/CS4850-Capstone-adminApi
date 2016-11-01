@@ -9,11 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-@MapperScan("Mapper")
 public class AdminapiApplication {
 
-	@Autowired
-	private Mapper mapper;
 
 	public static void main(String[] args) {
 		SpringApplication.run(AdminapiApplication.class, args);

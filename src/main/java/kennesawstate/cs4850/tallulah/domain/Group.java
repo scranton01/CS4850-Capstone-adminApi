@@ -9,6 +9,6 @@ public class Group {
     int groupid;
     List<User> users;
     List<Device> devices;
-    List<Group> channels;
+    List<Channel> channels;
     List<Message> messages;
 }

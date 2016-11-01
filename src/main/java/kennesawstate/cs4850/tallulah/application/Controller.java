@@ -55,8 +55,8 @@ public class Controller {
 
     @RequestMapping(path = groupsId, method = RequestMethod.DELETE)
     public ResponseEntity<IdStatus> deleteGroupBy(@PathVariable("groupid") int groupid) {
-
-        return null;
+        service.deleteGroupBy(groupid);
+        return new ResponseEntity<>(new IdStatus(groupid, "delete was successful."), HttpStatus.OK);
     }
 
     @RequestMapping(path = groupsId, method = RequestMethod.GET)

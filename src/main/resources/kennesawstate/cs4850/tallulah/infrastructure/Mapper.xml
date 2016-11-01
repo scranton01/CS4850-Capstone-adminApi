@@ -15,5 +15,8 @@
     <select id="findAllGroupId" resultType="int">
         SELECT GROUP_ID FROM GROUPS
     </select>
+    <delete id="deleteGroupBy" parameterType="int">
+        DELETE FROM GROUPS WHERE GROUP_ID = #{groupId}
+    </delete>
 
 </mapper>

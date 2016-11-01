@@ -22,4 +22,8 @@ public class InfraService {
     public List<Integer> findAllgroupId(){
         return mapper.findAllGroupId();
     }
+
+    public int deleteGroupBy(int groupId){
+        return mapper.deleteGroupBy(groupId);
+    }
 }

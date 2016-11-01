@@ -15,13 +15,13 @@ public class Service implements Repository {
     public Sample getSample() {
         return infraService.getSample();
     }
-    public int createGroupId(){
+    public Integer createGroupId(){
         return infraService.createGroupId();
     }
     public List<Integer> findAllGroupId(){
         return infraService.findAllgroupId();
     }
-    public Integer deleteGroupBy(){
-        return null;
+    public Integer deleteGroupBy(int groupId){
+        return infraService.deleteGroupBy(groupId);
     }
 }
