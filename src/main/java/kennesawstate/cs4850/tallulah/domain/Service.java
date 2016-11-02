@@ -19,9 +19,12 @@ public class Service implements Repository {
         return infraService.createGroupId();
     }
     public List<Integer> findAllGroupId(){
-        return infraService.findAllgroupId();
+        return infraService.findAllGroupId();
     }
     public Integer deleteGroupBy(int groupId){
         return infraService.deleteGroupBy(groupId);
+    }
+    public Group findGroupBy(int groupId){
+        return infraService.findGroupBy(groupId);
     }
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Device {
-    int deviceid;
-    int owerid;
+    int deviceId;
+    int ownerId;
     String name;
 }

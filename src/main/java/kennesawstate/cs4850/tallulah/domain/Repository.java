@@ -7,4 +7,5 @@ public interface Repository {
     Integer createGroupId();
     List<Integer> findAllGroupId();
     Integer deleteGroupBy(int groupId);
+    Group findGroupBy(int groupid);
 }

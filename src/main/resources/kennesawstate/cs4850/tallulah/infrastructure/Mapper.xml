@@ -4,11 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kennesawstate.cs4850.tallulah.infrastructure.Mapper">
     <select id="getSample" resultType="kennesawstate.cs4850.tallulah.domain.Sample">
-        SELECT ID, NAME  FROM SAMPLE WHERE ID = 999
+        SELECT ID, NAME FROM SAMPLE WHERE ID = 999
     </select>
     <insert id="createGroupId">
         INSERT INTO GROUPS (GROUP_ID) VALUES(GROUP_SEQUENCE.NEXTVAL)
     </insert>
+    <select id="findCurrentGroupId" resultType="int">
+        SELECT GROUP_SEQUENCE.CURRVAL FROM DUAL
+    </select>
     <select id="findLatestGroupId" resultType="int">
         SELECT MAX(GROUP_ID) FROM GROUPS
     </select>
@@ -18,5 +21,35 @@
     <delete id="deleteGroupBy" parameterType="int">
         DELETE FROM GROUPS WHERE GROUP_ID = #{groupId}
     </delete>
+    <select id="findGroupBy" parameterType="int" resultMap="groupResultMap">
+        SELECT GROUP_ID, USER_ID, DEVICE_ID, CHANNEL_ID, MESSAGE_ID FROM GROUPS WHERE GROUP_ID = #{groupId}
+    </select>
 
+    <resultMap id="groupResultMap" type="kennesawstate.cs4850.tallulah.domain.Group">
+        <id property="groupId" column="GROUP_ID"/>
+        <collection property="users" ofType="kennesawstate.cs4850.tallulah.domain.User">
+            <id property="userId" column="USER_ID"/>
+            <result property="email" column="EMAIL"/>
+            <result property="loginDetail" column="LOGIN_DETAIL"/>
+            <result property="userType" column="USER_TYPE"/>
+        </collection>
+        <collection property="devices" ofType="kennesawstate.cs4850.tallulah.domain.Device">
+            <id property="deviceId" column="DEVICE_ID"/>
+            <result property="ownerId" column="USER_ID"/>
+            <result property="name" column="NAME"/>
+        </collection>
+        <collection property="channels" ofType="kennesawstate.cs4850.tallulah.domain.Channel">
+            <id property="channelId" column="CHANNEL_ID"/>
+            <result property="name" column="NAME"/>
+            <result property="title" column="TITLE"/>
+            <result property="text" column="TEXT"/>
+            <result property="refreshTime" column="REFRESH_TIME"/>
+            <result property="channelType" column="CHANNEL_TYPE"/>
+        </collection>
+        <collection property="messages" ofType="kennesawstate.cs4850.tallulah.domain.Message">
+            <id property="messageId" column="MESSAGE_ID"/>
+            <result property="text" column="TEXT"/>
+            <result property="priorityNumber" column="PRIORITY"/>
+        </collection>
+    </resultMap>
 </mapper>

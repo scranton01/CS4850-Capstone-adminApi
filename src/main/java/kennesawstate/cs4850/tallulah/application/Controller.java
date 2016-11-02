@@ -1,9 +1,8 @@
 package kennesawstate.cs4850.tallulah.application;
 
 
-import kennesawstate.cs4850.tallulah.application.Response.GroupId;
-import kennesawstate.cs4850.tallulah.application.Response.GroupIdList;
-import kennesawstate.cs4850.tallulah.application.Response.IdStatus;
+import kennesawstate.cs4850.tallulah.application.Response.*;
+import kennesawstate.cs4850.tallulah.domain.Group;
 import kennesawstate.cs4850.tallulah.domain.Sample;
 import kennesawstate.cs4850.tallulah.domain.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +59,30 @@ public class Controller {
     }
 
     @RequestMapping(path = groupsId, method = RequestMethod.GET)
-    public void findGroupBy() {
+    public ResponseEntity<DetailGroupIdList> findGroupBy(@PathVariable("groupid") int groupid) {
+        Group group = service.findGroupBy(groupid);
+        List<UserId> userIdList = new ArrayList<>();
+        group.getUsers().forEach(i -> userIdList.add(new UserId(i.getUserId())));
+        List<DeviceId> deviceIdList = new ArrayList<>();
+        group.getDevices().forEach(i -> deviceIdList.add(new DeviceId(i.getDeviceId())));
+        List<ChannelId> channelIdList = new ArrayList<>();
+        group.getChannels().forEach(i -> channelIdList.add(new ChannelId(i.getChannelId())));
+        List<MessageId> messageIdList = new ArrayList<>();
+        group.getMessages().forEach(i -> messageIdList.add(new MessageId(i.getMessageId())));
 
+        DetailGroupId detailGroupId = DetailGroupId.builder()
+                .groupid(group.getGroupId())
+                .users(userIdList)
+                .devices(deviceIdList)
+                .channels(channelIdList)
+                .messages(messageIdList)
+                .build();
+        List<DetailGroupId> detailGroupIdList = new ArrayList<>();
+        detailGroupIdList.add(detailGroupId);
+        DetailGroupIdList result = new DetailGroupIdList(detailGroupIdList);
+
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(path = users, method = RequestMethod.POST)

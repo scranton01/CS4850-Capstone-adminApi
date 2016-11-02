@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class Group {
-    int groupid;
+    int groupId;
     List<User> users;
     List<Device> devices;
     List<Channel> channels;
