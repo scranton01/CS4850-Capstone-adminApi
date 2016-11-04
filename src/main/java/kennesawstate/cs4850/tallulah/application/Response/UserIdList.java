@@ -4,8 +4,7 @@ import lombok.Value;
 
 import java.util.List;
 
-
 @Value
-public class DetailGroupIdList {
-    List<DetailGroupId> groups;
+public class UserIdList {
+    List<UserId> users;
 }

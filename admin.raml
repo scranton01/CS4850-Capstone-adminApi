@@ -11,6 +11,82 @@ documentation:
   displayName: api-adminPage
   description: |
     This collection of resources will enable database transaction by administration page
+  /{version}/users:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+    get:
+        description: retrieve all user id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "users": [
+                      {    
+                        "userid":1
+                      }
+                    ]
+                  }  
+    post:
+        description: create new person id
+        body:
+          application/json:
+            example: |
+              {
+                "name":"John Smith",
+                "email":"sample@company",        
+                "usertype":"admin"
+              }
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"Create was successful."
+                  }   
+  /{version}/users/{userid}:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      userid:
+        type: number
+        description: user id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    get:
+        description: create new person id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "name":"John Smith",
+                    "email":"sample@company", 
+                    "loginDetail":"login details goes here",       
+                    "userType":"admin"
+                  }  
+    delete:
+        description: delete person information
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"delete was successful"
+                  }
   /{version}/groups:
     uriParameters:
       version:
@@ -120,29 +196,7 @@ documentation:
                   {
                     "status":"specified group id doesn't exist"
                   } 
-  /{version}/groups/{groupid}/users:
-    uriParameters:
-      version:
-        type: number
-        description: version of current API
-        example: 1
-      groupid:
-        type: number
-        description: group id
-        example: 1
-        maximum: 999999999
-        minimum: 1
-    post:
-        description: create new person id
-        responses:
-          201:
-            body:
-              application/json:
-                example: |
-                  {
-                    "id":1,
-                    "status":"Create was successful."
-                  }         
+  /{version}/groups/{groupid}/users:       
     get:
         description: get all person id
         responses:
@@ -195,8 +249,9 @@ documentation:
                         "users": [
                           {    
                             "userid":1,
-                            "email":"sample@company.com,        
-                            "login detail":"login details goes here"
+                            "name":"John Smith",
+                            "email":"sample@company.com",        
+                            "loginDetail":"login details goes here",
                             "usertype":"admin"
                           }
                         ]
@@ -228,7 +283,7 @@ documentation:
                     "status":"update was successful"
                   }
     delete:
-        description: delete person information
+        description: remove specified user from group
         responses:
           200:
             body:
@@ -238,6 +293,17 @@ documentation:
                     "id":1,
                     "status":"delete was successful"
                   }
+    post:
+        description: add specified user to the specified group
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"Create was successful."
+                  }   
   /{version}/groups/{groupid}/devices:
     uriParameters:
       version:

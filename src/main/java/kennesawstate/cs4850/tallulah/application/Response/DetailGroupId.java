@@ -1,10 +1,11 @@
 package kennesawstate.cs4850.tallulah.application.Response;
 
-import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
-@Builder
+//@Builder
+@Data
 public class DetailGroupId {
     int groupid;
     List<UserId> users;

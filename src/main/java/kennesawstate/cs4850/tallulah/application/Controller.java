@@ -1,17 +1,13 @@
 package kennesawstate.cs4850.tallulah.application;
 
 
+import kennesawstate.cs4850.tallulah.application.Request.UserRequest;
 import kennesawstate.cs4850.tallulah.application.Response.*;
-import kennesawstate.cs4850.tallulah.domain.Group;
-import kennesawstate.cs4850.tallulah.domain.Sample;
-import kennesawstate.cs4850.tallulah.domain.Service;
+import kennesawstate.cs4850.tallulah.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +15,12 @@ import java.util.List;
 @RestController
 public class Controller {
 
+    private static final String users = "/apiadmin/1/users";
+    private static final String usersId = "/apiadmin/1/users/{userid}";
     private static final String groups = "/apiadmin/1/groups";
     private static final String groupsId = "/apiadmin/1/groups/{groupid}";
-    private static final String users = "/apiadmin/1/groups/{groupid}/users";
-    private static final String usersId = "/apiadmin/1/groups/{groupid}/users/{userid}";
+    private static final String groupUsers = "/apiadmin/1/groups/{groupid}/users";
+    private static final String groupUsersId = "/apiadmin/1/groups/{groupid}/users/{userid}";
     private static final String devices = "/apiadmin/1/groups/{groupid}/devices";
     private static final String devicesId = "/apiadmin/1/groups/{groupid}/devices/{deviceid}";
     private static final String channels = "/apiadmin/1/groups/{groupid}/channels";
@@ -38,10 +36,46 @@ public class Controller {
         return service.getSample();
     }
 
+
+    @RequestMapping(path = users, method = RequestMethod.GET)
+    public ResponseEntity<UserIdList> findAllUserId() {
+        List<Integer> userIds = service.findAllUserId();
+        List<UserId> userIdList = new ArrayList<>();
+        userIds.forEach(i -> userIdList.add(new UserId(i)));
+        return new ResponseEntity<>(new UserIdList(userIdList), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = users, method = RequestMethod.POST)
+    public ResponseEntity<Object> createUser(@RequestBody UserRequest userRequest) {
+        User user = new User();
+        user.setName(userRequest.getName());
+        user.setEmail(userRequest.getEmail());
+        user.setUserType(UserType.valueOf(userRequest.getUsertype()));
+        return new ResponseEntity<>(new IdStatus(service.createUser(user), "create was successful."), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = usersId, method = RequestMethod.GET)
+    public ResponseEntity<UserResponse> findUserBy(@PathVariable("userid") int userid) {
+        User user = service.findUserBy(userid);
+        UserResponse userResponse = new UserResponse();
+        //some field may be null
+        userResponse.setId(user.getUserId());
+        userResponse.setName(user.getName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setLoginDetail(user.getLoginDetail());
+        userResponse.setUserType(user.getUserType().toString());
+        return new ResponseEntity<UserResponse>(userResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = usersId, method = RequestMethod.DELETE)
+    public ResponseEntity<IdStatus> deleteUser(@PathVariable("userid") int userid) {
+        service.deleteUserBy(userid);
+        return new ResponseEntity<>(new IdStatus(userid, "delete was successful."), HttpStatus.OK);
+    }
+
     @RequestMapping(path = groups, method = RequestMethod.POST)
     public ResponseEntity<IdStatus> createGroup() {
-        IdStatus idStatus = new IdStatus(service.createGroupId(), "create was successful.");
-        return new ResponseEntity<>(idStatus, HttpStatus.CREATED);
+        return new ResponseEntity<>(new IdStatus(service.createGroupId(), "create was successful."), HttpStatus.CREATED);
     }
 
     @RequestMapping(path = groups, method = RequestMethod.GET)
@@ -70,43 +104,49 @@ public class Controller {
         List<MessageId> messageIdList = new ArrayList<>();
         group.getMessages().forEach(i -> messageIdList.add(new MessageId(i.getMessageId())));
 
-        DetailGroupId detailGroupId = DetailGroupId.builder()
-                .groupid(group.getGroupId())
-                .users(userIdList)
-                .devices(deviceIdList)
-                .channels(channelIdList)
-                .messages(messageIdList)
-                .build();
+//        DetailGroupId detailGroupId = DetailGroupId.builder()
+//                .groupid(group.getGroupId())
+//                .users(userIdList)
+//                .devices(deviceIdList)
+//                .channels(channelIdList)
+//                .messages(messageIdList)
+//                .build();
+        DetailGroupId detailGroupId = new DetailGroupId();
+        detailGroupId.setGroupid(group.getGroupId());
+        detailGroupId.setUsers(userIdList);
+        detailGroupId.setDevices(deviceIdList);
+        detailGroupId.setChannels(channelIdList);
+        detailGroupId.setMessages(messageIdList);
         List<DetailGroupId> detailGroupIdList = new ArrayList<>();
         detailGroupIdList.add(detailGroupId);
         DetailGroupIdList result = new DetailGroupIdList(detailGroupIdList);
 
-
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(path = users, method = RequestMethod.POST)
-    public void createUser() {
+
+    @RequestMapping(path = groupUsers, method = RequestMethod.POST)
+    public void addUserToGroup(@PathVariable("groupid") int groupid, @RequestBody UserRequest user) {
+        System.out.println(user);
+    }
+
+    @RequestMapping(path = groupUsers, method = RequestMethod.GET)
+    public void findUsersInGroup() {
 
     }
 
-    @RequestMapping(path = users, method = RequestMethod.GET)
-    public void findUsers() {
+    @RequestMapping(path = groupUsersId, method = RequestMethod.DELETE)
+    public void deleteUserByInGroup() {
 
     }
 
-    @RequestMapping(path = usersId, method = RequestMethod.DELETE)
-    public void deleteUserBy() {
+    @RequestMapping(path = groupUsersId, method = RequestMethod.PUT)
+    public void updateUserByInGroup() {
 
     }
 
-    @RequestMapping(path = usersId, method = RequestMethod.PUT)
-    public void updateUserBy() {
-
-    }
-
-    @RequestMapping(path = usersId, method = RequestMethod.GET)
-    public void findUserBy() {
+    @RequestMapping(path = groupUsersId, method = RequestMethod.GET)
+    public void findUserByInGroup() {
 
     }
 

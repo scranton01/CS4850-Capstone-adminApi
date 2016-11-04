@@ -6,5 +6,5 @@ import lombok.Data;
 public class Device {
     int deviceId;
     int ownerId;
-    String name;
+    String ownerName;
 }

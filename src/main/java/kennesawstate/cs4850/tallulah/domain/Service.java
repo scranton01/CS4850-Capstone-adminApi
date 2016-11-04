@@ -15,16 +15,36 @@ public class Service implements Repository {
     public Sample getSample() {
         return infraService.getSample();
     }
-    public Integer createGroupId(){
+
+    public List<Integer> findAllUserId() {
+        return infraService.findAllUserId();
+    }
+
+    public Integer createUser(User user) {
+        return infraService.createUser(user);
+    }
+
+    public User findUserBy(int userId) {
+        return infraService.findUserBy(userId);
+    }
+
+    public Integer deleteUserBy(int userId){
+        return infraService.deleteUserBy(userId);
+    }
+
+    public Integer createGroupId() {
         return infraService.createGroupId();
     }
-    public List<Integer> findAllGroupId(){
+
+    public List<Integer> findAllGroupId() {
         return infraService.findAllGroupId();
     }
-    public Integer deleteGroupBy(int groupId){
+
+    public Integer deleteGroupBy(int groupId) {
         return infraService.deleteGroupBy(groupId);
     }
-    public Group findGroupBy(int groupId){
+
+    public Group findGroupBy(int groupId) {
         return infraService.findGroupBy(groupId);
     }
 }
