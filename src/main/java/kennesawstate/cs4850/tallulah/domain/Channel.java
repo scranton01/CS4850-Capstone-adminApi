@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Channel {
     int channelId;
-    String name;
+    String channelName;
     String title;
     String text;
     double refreshTime;

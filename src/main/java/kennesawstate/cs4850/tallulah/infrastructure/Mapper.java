@@ -15,11 +15,15 @@ public interface Mapper {
     void createGroupId();
     int findCurrentUserId();
     User findUserBy(int userId);
-    void deleteUserBy(int userId);
+    int deleteUserBy(int userId);
     int findCurrentGroupId();
     int findLatestGroupId();
     List<Integer> findAllGroupId();
     int deleteGroupBy(int groupId);
     Group findGroupBy(int groupId);
-
+    List<User> findUserByGroupId(int groupId);
+    int removeUserFromGroup(@Param("groupId")int groupId, @Param("userId")int userId);
+    int updateLoginDetail(@Param("userId")int userId, @Param("loginDetail")String loginDetail);
+    int addUserToGroup(@Param("groupId") int groupId, @Param("userId") int userId);
+    Group findUserInGroupBy(@Param("groupId") int groupId, @Param("userId") int userId);
 }

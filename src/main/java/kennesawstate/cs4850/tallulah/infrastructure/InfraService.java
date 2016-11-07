@@ -24,7 +24,7 @@ public class InfraService {
     }
 
     public int createUser(User user) {
-        mapper.createUser(user.getName(), user.getEmail(), user.getUserType().toString());
+        mapper.createUser(user.getUserName(), user.getEmail(), user.getUserType().toString());
         return mapper.findCurrentUserId();
     }
 
@@ -32,7 +32,7 @@ public class InfraService {
         return mapper.findUserBy(userId);
     }
 
-    public int deleteUserBy(int userId){
+    public int deleteUserBy(int userId) {
         mapper.deleteUserBy(userId);
         return userId;
     }
@@ -70,6 +70,30 @@ public class InfraService {
                 .stream()
                 .filter(i -> i.getMessageId() != 0)
                 .collect(Collectors.toList()));
+        return group;
+    }
+
+    public List<User> findUserByGroupId(int groupId) {
+        return mapper.findUserByGroupId(groupId)
+                .stream()
+                .filter(i -> i.getUserId() != 0)
+                .collect(Collectors.toList());
+    }
+
+    public int removeUserFromGroup(int groupId, int userId) {
+        return mapper.removeUserFromGroup(groupId, userId);
+    }
+
+    public int updateLoginDetail(int userId, String loginDetail) {
+        return mapper.updateLoginDetail(userId, loginDetail);
+    }
+
+    public int addUserToGroup(int groupId, int userId) {
+        return mapper.addUserToGroup(groupId, userId);
+    }
+
+    public Group findUserInGroupBy(int groupId, int userId) {
+        Group group = mapper.findUserInGroupBy(groupId, userId);
         return group;
     }
 }

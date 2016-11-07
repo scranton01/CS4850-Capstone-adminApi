@@ -21,5 +21,13 @@ public interface Repository {
 
     Group findGroupBy(int groupid);
 
+    List<User> findUserByGroupId(int groupId);
 
+    void removeUserFromGroup(int groupId, int userId);
+
+    void updateLoginDetail(int userId, String loginDetail);
+
+    void addUserToGroup(int groupId, int userId);
+
+    Group findUserInGroupBy(int groupId, int userId);
 }

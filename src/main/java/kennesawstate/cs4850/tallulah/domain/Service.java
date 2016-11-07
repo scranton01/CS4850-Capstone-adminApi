@@ -28,7 +28,7 @@ public class Service implements Repository {
         return infraService.findUserBy(userId);
     }
 
-    public Integer deleteUserBy(int userId){
+    public Integer deleteUserBy(int userId) {
         return infraService.deleteUserBy(userId);
     }
 
@@ -46,5 +46,25 @@ public class Service implements Repository {
 
     public Group findGroupBy(int groupId) {
         return infraService.findGroupBy(groupId);
+    }
+
+    public List<User> findUserByGroupId(int groupId) {
+        return infraService.findUserByGroupId(groupId);
+    }
+
+    public void removeUserFromGroup(int groupId, int userId) {
+        infraService.removeUserFromGroup(groupId, userId);
+    }
+
+    public void updateLoginDetail(int userId, String loginDetail) {
+        infraService.updateLoginDetail(userId, loginDetail);
+    }
+
+    public void addUserToGroup(int groupId, int userId) {
+        infraService.addUserToGroup(groupId, userId);
+    }
+
+    public Group findUserInGroupBy(int groupId, int userId){
+        return infraService.findUserInGroupBy(groupId, userId);
     }
 }

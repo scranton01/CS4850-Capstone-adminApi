@@ -1,6 +1,7 @@
 package kennesawstate.cs4850.tallulah.application;
 
 
+import kennesawstate.cs4850.tallulah.application.Request.LoginDetail;
 import kennesawstate.cs4850.tallulah.application.Request.UserRequest;
 import kennesawstate.cs4850.tallulah.application.Response.*;
 import kennesawstate.cs4850.tallulah.domain.*;
@@ -28,18 +29,19 @@ public class Controller {
     private static final String messages = "/apiadmin/1/groups/{groupid}/messages";
     private static final String messagesId = "/apiadmin/1/groups/{groupid}/messages/{messageid}";
 
+
     @Autowired
-    private Service service;
+    Repository repository;
 
     @RequestMapping(path = "/sample", method = RequestMethod.GET)
     public Sample sampleTest() {
-        return service.getSample();
+        return repository.getSample();
     }
 
 
     @RequestMapping(path = users, method = RequestMethod.GET)
     public ResponseEntity<UserIdList> findAllUserId() {
-        List<Integer> userIds = service.findAllUserId();
+        List<Integer> userIds = repository.findAllUserId();
         List<UserId> userIdList = new ArrayList<>();
         userIds.forEach(i -> userIdList.add(new UserId(i)));
         return new ResponseEntity<>(new UserIdList(userIdList), HttpStatus.OK);
@@ -48,53 +50,59 @@ public class Controller {
     @RequestMapping(path = users, method = RequestMethod.POST)
     public ResponseEntity<Object> createUser(@RequestBody UserRequest userRequest) {
         User user = new User();
-        user.setName(userRequest.getName());
+        user.setUserName(userRequest.getName());
         user.setEmail(userRequest.getEmail());
         user.setUserType(UserType.valueOf(userRequest.getUsertype()));
-        return new ResponseEntity<>(new IdStatus(service.createUser(user), "create was successful."), HttpStatus.OK);
+        return new ResponseEntity<>(new IdStatus(repository.createUser(user), "create was successful."), HttpStatus.OK);
     }
 
     @RequestMapping(path = usersId, method = RequestMethod.GET)
-    public ResponseEntity<UserResponse> findUserBy(@PathVariable("userid") int userid) {
-        User user = service.findUserBy(userid);
+    public ResponseEntity<UserResponse> findUserBy(@PathVariable("userid") int userId) {
+        User user = repository.findUserBy(userId);
         UserResponse userResponse = new UserResponse();
         //some field may be null
         userResponse.setId(user.getUserId());
-        userResponse.setName(user.getName());
+        userResponse.setName(user.getUserName());
         userResponse.setEmail(user.getEmail());
         userResponse.setLoginDetail(user.getLoginDetail());
         userResponse.setUserType(user.getUserType().toString());
         return new ResponseEntity<UserResponse>(userResponse, HttpStatus.OK);
     }
 
+    @RequestMapping(path = usersId, method = RequestMethod.PUT)
+    public ResponseEntity<IdStatus> updateLoginDetail(@PathVariable("userid") int userId, @RequestBody LoginDetail loginDetail){
+        repository.updateLoginDetail(userId,loginDetail.getLoginDetail());
+        return new ResponseEntity<>(new IdStatus(userId, "update was successful"), HttpStatus.OK);
+    }
+
     @RequestMapping(path = usersId, method = RequestMethod.DELETE)
-    public ResponseEntity<IdStatus> deleteUser(@PathVariable("userid") int userid) {
-        service.deleteUserBy(userid);
-        return new ResponseEntity<>(new IdStatus(userid, "delete was successful."), HttpStatus.OK);
+    public ResponseEntity<IdStatus> deleteUser(@PathVariable("userid") int userId) {
+        repository.deleteUserBy(userId);
+        return new ResponseEntity<>(new IdStatus(userId, "delete was successful."), HttpStatus.OK);
     }
 
     @RequestMapping(path = groups, method = RequestMethod.POST)
     public ResponseEntity<IdStatus> createGroup() {
-        return new ResponseEntity<>(new IdStatus(service.createGroupId(), "create was successful."), HttpStatus.CREATED);
+        return new ResponseEntity<>(new IdStatus(repository.createGroupId(), "create was successful."), HttpStatus.CREATED);
     }
 
     @RequestMapping(path = groups, method = RequestMethod.GET)
     public ResponseEntity<GroupIdList> findGroups() {
-        List<Integer> groupIdListInt = service.findAllGroupId();
+        List<Integer> groupIdListInt = repository.findAllGroupId();
         List<GroupId> groups = new ArrayList<>();
         groupIdListInt.forEach(i -> groups.add(new GroupId(i)));
         return new ResponseEntity<>(new GroupIdList(groups), HttpStatus.OK);
     }
 
     @RequestMapping(path = groupsId, method = RequestMethod.DELETE)
-    public ResponseEntity<IdStatus> deleteGroupBy(@PathVariable("groupid") int groupid) {
-        service.deleteGroupBy(groupid);
-        return new ResponseEntity<>(new IdStatus(groupid, "delete was successful."), HttpStatus.OK);
+    public ResponseEntity<IdStatus> deleteGroupBy(@PathVariable("groupid") int groupId) {
+        repository.deleteGroupBy(groupId);
+        return new ResponseEntity<>(new IdStatus(groupId, "delete was successful."), HttpStatus.OK);
     }
 
     @RequestMapping(path = groupsId, method = RequestMethod.GET)
-    public ResponseEntity<DetailGroupIdList> findGroupBy(@PathVariable("groupid") int groupid) {
-        Group group = service.findGroupBy(groupid);
+    public ResponseEntity<DetailGroupIdList> findGroupBy(@PathVariable("groupid") int groupId) {
+        Group group = repository.findGroupBy(groupId);
         List<UserId> userIdList = new ArrayList<>();
         group.getUsers().forEach(i -> userIdList.add(new UserId(i.getUserId())));
         List<DeviceId> deviceIdList = new ArrayList<>();
@@ -124,30 +132,41 @@ public class Controller {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-
-    @RequestMapping(path = groupUsers, method = RequestMethod.POST)
-    public void addUserToGroup(@PathVariable("groupid") int groupid, @RequestBody UserRequest user) {
-        System.out.println(user);
-    }
-
+    //Might not need this endpoint
     @RequestMapping(path = groupUsers, method = RequestMethod.GET)
-    public void findUsersInGroup() {
+    public ResponseEntity<GroupUserList> findUsersInGroup(@PathVariable("groupid") int groupId) {
+        List<User> users = repository.findUserByGroupId(groupId);
+        GroupUser groupUser = new GroupUser();
+        groupUser.setGroupid(groupId);
+        groupUser.setUsers(users);
+        List<GroupUser> groups = new ArrayList<>();
+        groups.add(groupUser);
+
+        return new ResponseEntity<>(new GroupUserList(groups), HttpStatus.OK);
 
     }
 
     @RequestMapping(path = groupUsersId, method = RequestMethod.DELETE)
-    public void deleteUserByInGroup() {
-
+    public ResponseEntity<IdStatus> deleteUserByInGroup(@PathVariable("groupid") int groupId, @PathVariable("userid") int userId) {
+        repository.removeUserFromGroup(groupId, userId);
+        return new ResponseEntity<IdStatus>(new IdStatus(userId,"delete was successful"), HttpStatus.OK);
     }
 
-    @RequestMapping(path = groupUsersId, method = RequestMethod.PUT)
-    public void updateUserByInGroup() {
-
+    @RequestMapping(path = groupUsersId, method = RequestMethod.POST)
+    public ResponseEntity<IdStatus> addUserToGroup(@PathVariable("groupid") int groupId, @PathVariable("userid") int userId) {
+        repository.addUserToGroup(groupId, userId);
+        return new ResponseEntity<>(new IdStatus(userId,"create was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = groupUsersId, method = RequestMethod.GET)
-    public void findUserByInGroup() {
-
+    public ResponseEntity<GroupUserList> findUserInGroupBy(@PathVariable("groupid") int groupId, @PathVariable("userid") int userId) {
+        Group group =  repository.findUserInGroupBy(groupId, userId);
+        GroupUser groupUser = new GroupUser();
+        groupUser.setGroupid(group.getGroupId());
+        groupUser.setUsers(group.getUsers());
+        List<GroupUser> groups = new ArrayList<>();
+        groups.add(groupUser);
+        return new ResponseEntity<GroupUserList>(new GroupUserList(groups), HttpStatus.OK);
     }
 
     @RequestMapping(path = devices, method = RequestMethod.POST)

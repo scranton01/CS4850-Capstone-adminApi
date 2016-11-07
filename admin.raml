@@ -76,6 +76,23 @@ documentation:
                     "loginDetail":"login details goes here",       
                     "userType":"admin"
                   }  
+    put:  
+        description: update user information
+        body:
+          application/json:
+            example: |
+              {
+                "loginDetail":"login details goes here"    
+              }
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"update was successful"
+                  }
     delete:
         description: delete person information
         responses:
@@ -210,7 +227,11 @@ documentation:
                         "groupid":1,
                         "users": [
                           {    
-                            "userid":1
+                            "userid":1,
+                            "name":"John Smith",
+                            "email":"sample@company.com",        
+                            "loginDetail":"login details goes here",
+                            "usertype":"admin"
                           }
                         ]
                       }
@@ -265,23 +286,6 @@ documentation:
                   {
                     "status":"specified person id doesn't exist"
                   } 
-    put:
-        description: update person login information
-        body:
-          application/json:
-            example: |
-              {
-                "login detail":"login details goes here",
-              } 
-        responses:
-          200:
-            body:
-              application/json:
-                example: |
-                  {
-                    "id":1,
-                    "status":"update was successful"
-                  }
     delete:
         description: remove specified user from group
         responses:
