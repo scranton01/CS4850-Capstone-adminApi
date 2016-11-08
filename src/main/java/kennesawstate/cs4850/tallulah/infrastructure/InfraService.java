@@ -74,10 +74,11 @@ public class InfraService {
     }
 
     public List<User> findUserByGroupId(int groupId) {
-        return mapper.findUserByGroupId(groupId)
+        List<User> users =  mapper.findUserByGroupId(groupId)
                 .stream()
                 .filter(i -> i.getUserId() != 0)
                 .collect(Collectors.toList());
+        return users;
     }
 
     public int removeUserFromGroup(int groupId, int userId) {
