@@ -26,4 +26,5 @@ public interface Mapper {
     int updateLoginDetail(@Param("userId")int userId, @Param("loginDetail")String loginDetail);
     int addUserToGroup(@Param("groupId") int groupId, @Param("userId") int userId);
     Group findUserInGroupBy(@Param("groupId") int groupId, @Param("userId") int userId);
+    int createDevice(@Param("userId") int userId);
 }

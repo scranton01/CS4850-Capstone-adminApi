@@ -67,4 +67,8 @@ public class Service implements Repository {
     public Group findUserInGroupBy(int groupId, int userId){
         return infraService.findUserInGroupBy(groupId, userId);
     }
+
+    public void createDevice(int userId){
+        infraService.createDevice(userId);
+    }
 }

@@ -30,4 +30,6 @@ public interface Repository {
     void addUserToGroup(int groupId, int userId);
 
     Group findUserInGroupBy(int groupId, int userId);
+
+    void createDevice(int userId);
 }

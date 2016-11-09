@@ -97,4 +97,10 @@ public class InfraService {
         Group group = mapper.findUserInGroupBy(groupId, userId);
         return group;
     }
+
+    //return update count
+    public int createDevice(int userId){
+        return mapper.createDevice(userId);
+    }
+
 }
