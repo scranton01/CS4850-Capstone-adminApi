@@ -31,5 +31,14 @@ public interface Repository {
 
     Group findUserInGroupBy(int groupId, int userId);
 
-    void createDevice(int userId);
+    int createDevice(int groupId, int userId);
+
+
+    Group findDeviceInGroup(int groupId);
+
+    void deleteDevice(int groupId, int deviceId);
+
+    Group findDeviceInGroupBy(int groupId, int deviceId);
+
+    int createChannel(int groupId, Channel channel);
 }

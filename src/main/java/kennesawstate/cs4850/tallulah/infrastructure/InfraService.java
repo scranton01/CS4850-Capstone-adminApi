@@ -1,5 +1,6 @@
 package kennesawstate.cs4850.tallulah.infrastructure;
 
+import kennesawstate.cs4850.tallulah.domain.Channel;
 import kennesawstate.cs4850.tallulah.domain.Group;
 import kennesawstate.cs4850.tallulah.domain.Sample;
 import kennesawstate.cs4850.tallulah.domain.User;
@@ -74,7 +75,7 @@ public class InfraService {
     }
 
     public List<User> findUserByGroupId(int groupId) {
-        List<User> users =  mapper.findUserByGroupId(groupId)
+        List<User> users = mapper.findUserByGroupId(groupId)
                 .stream()
                 .filter(i -> i.getUserId() != 0)
                 .collect(Collectors.toList());
@@ -98,9 +99,37 @@ public class InfraService {
         return group;
     }
 
-    //return update count
-    public int createDevice(int userId){
-        return mapper.createDevice(userId);
+    //return created id
+    public int createDevice(int groupId, int userId) {
+        mapper.createDevice(userId);
+        mapper.addDeviceToGroup(groupId);
+        return mapper.findLatestDeviceId();
+    }
+
+
+
+    public Group findDeviceInGroup(int groupId) {
+        Group group = mapper.findDeviceInGroup(groupId);
+        group.setDevices(group.getDevices()
+                .stream()
+                .filter(i -> i.getDeviceId() != 0)
+                .collect(Collectors.toList()));
+        return group;
+    }
+
+    public int deleteDevice(int groupId, int deviceId) {
+        mapper.deleteDeviceInGroup(groupId, deviceId);
+        return mapper.deleteDevice(deviceId);
+    }
+
+    public Group findDeviceInGroupBy(int groupId, int deviceId) {
+        return mapper.findDeviceInGroupBy(groupId, deviceId);
+    }
+
+    public int createChannel(int groupId, Channel channel) {
+        mapper.createChannel(channel);
+        mapper.addChannelToGroup(groupId);
+        return mapper.findLatestChannelId();
     }
 
 }

@@ -64,11 +64,28 @@ public class Service implements Repository {
         infraService.addUserToGroup(groupId, userId);
     }
 
-    public Group findUserInGroupBy(int groupId, int userId){
+    public Group findUserInGroupBy(int groupId, int userId) {
         return infraService.findUserInGroupBy(groupId, userId);
     }
 
-    public void createDevice(int userId){
-        infraService.createDevice(userId);
+    public int createDevice(int groupId, int userId) {
+        return infraService.createDevice(groupId, userId);
+    }
+
+
+    public Group findDeviceInGroup(int groupId) {
+        return infraService.findDeviceInGroup(groupId);
+    }
+
+    public void deleteDevice(int groupId, int deviceId) {
+        infraService.deleteDevice(groupId, deviceId);
+    }
+
+    public Group findDeviceInGroupBy(int groupId, int deviceId) {
+        return infraService.findDeviceInGroupBy(groupId, deviceId);
+    }
+
+    public int createChannel(int groupId, Channel channel) {
+        return infraService.createChannel(groupId, channel);
     }
 }

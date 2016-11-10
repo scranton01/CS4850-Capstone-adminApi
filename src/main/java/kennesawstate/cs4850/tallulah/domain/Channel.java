@@ -8,6 +8,6 @@ public class Channel {
     String channelName;
     String title;
     String text;
-    double refreshTime;
+    Long refreshTime;
     ChannelType channelType;
 }

@@ -1,6 +1,7 @@
 package kennesawstate.cs4850.tallulah.application;
 
 
+import kennesawstate.cs4850.tallulah.application.Request.ChannelRequest;
 import kennesawstate.cs4850.tallulah.application.Request.LoginDetail;
 import kennesawstate.cs4850.tallulah.application.Request.UserRequest;
 import kennesawstate.cs4850.tallulah.application.Response.*;
@@ -52,7 +53,7 @@ public class Controller {
         User user = new User();
         user.setUserName(userRequest.getName());
         user.setEmail(userRequest.getEmail());
-        user.setUserType(UserType.valueOf(userRequest.getUsertype()));
+        user.setUserType(UserType.valueOf(userRequest.getUserType()));
         return new ResponseEntity<>(new IdStatus(repository.createUser(user), "create was successful."), HttpStatus.OK);
     }
 
@@ -70,8 +71,8 @@ public class Controller {
     }
 
     @RequestMapping(path = usersId, method = RequestMethod.PUT)
-    public ResponseEntity<IdStatus> updateLoginDetail(@PathVariable("userid") int userId, @RequestBody LoginDetail loginDetail){
-        repository.updateLoginDetail(userId,loginDetail.getLoginDetail());
+    public ResponseEntity<IdStatus> updateLoginDetail(@PathVariable("userid") int userId, @RequestBody LoginDetail loginDetail) {
+        repository.updateLoginDetail(userId, loginDetail.getLoginDetail());
         return new ResponseEntity<>(new IdStatus(userId, "update was successful"), HttpStatus.OK);
     }
 
@@ -149,49 +150,69 @@ public class Controller {
     @RequestMapping(path = groupUsersId, method = RequestMethod.DELETE)
     public ResponseEntity<IdStatus> deleteUserByInGroup(@PathVariable("groupid") int groupId, @PathVariable("userid") int userId) {
         repository.removeUserFromGroup(groupId, userId);
-        return new ResponseEntity<IdStatus>(new IdStatus(userId,"delete was successful"), HttpStatus.OK);
+        return new ResponseEntity<>(new IdStatus(userId, "delete was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = groupUsersId, method = RequestMethod.POST)
     public ResponseEntity<IdStatus> addUserToGroup(@PathVariable("groupid") int groupId, @PathVariable("userid") int userId) {
         repository.addUserToGroup(groupId, userId);
-        return new ResponseEntity<>(new IdStatus(userId,"create was successful"), HttpStatus.OK);
+        return new ResponseEntity<>(new IdStatus(userId, "create was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = groupUsersId, method = RequestMethod.GET)
     public ResponseEntity<GroupUserList> findUserInGroupBy(@PathVariable("groupid") int groupId, @PathVariable("userid") int userId) {
-        Group group =  repository.findUserInGroupBy(groupId, userId);
+        Group group = repository.findUserInGroupBy(groupId, userId);
         GroupUser groupUser = new GroupUser();
         groupUser.setGroupid(group.getGroupId());
         groupUser.setUsers(group.getUsers());
         List<GroupUser> groups = new ArrayList<>();
         groups.add(groupUser);
-        return new ResponseEntity<GroupUserList>(new GroupUserList(groups), HttpStatus.OK);
+        return new ResponseEntity<>(new GroupUserList(groups), HttpStatus.OK);
     }
 
     @RequestMapping(path = devices, method = RequestMethod.POST)
-    public void createDevice() {
-
+    public ResponseEntity<IdStatus> createDevice(@PathVariable("groupid") int groupId, @RequestBody UserId userId) {
+        int deviceId = repository.createDevice(groupId, userId.getUserid());
+        return new ResponseEntity<>(new IdStatus(deviceId, "create was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = devices, method = RequestMethod.GET)
-    public void findDevices() {
-
+    public ResponseEntity<GroupDeviceList> findDevices(@PathVariable("groupid") int groupId) {
+        Group group = repository.findDeviceInGroup(groupId);
+        GroupDevice groupDevice = new GroupDevice();
+        groupDevice.setGroupId(group.getGroupId());
+        groupDevice.setDevices(group.getDevices());
+        List<GroupDevice> groups = new ArrayList<>();
+        groups.add(groupDevice);
+        return new ResponseEntity<>(new GroupDeviceList(groups), HttpStatus.OK);
     }
 
     @RequestMapping(path = devicesId, method = RequestMethod.DELETE)
-    public void deleteDeviceBy() {
-
+    public ResponseEntity<IdStatus> deleteDeviceBy(@PathVariable("groupid") int groupId, @PathVariable("deviceid") int deviceId) {
+        repository.deleteDevice(groupId, deviceId);
+        return new ResponseEntity<>(new IdStatus(deviceId, "delete was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = devicesId, method = RequestMethod.GET)
-    public void findDeviceBy() {
-
+    public ResponseEntity<GroupDeviceList> findDeviceBy(@PathVariable("groupid") int groupId, @PathVariable("deviceid") int deviceId) {
+        Group group = repository.findDeviceInGroupBy(groupId, deviceId);
+        GroupDevice groupDevice = new GroupDevice();
+        groupDevice.setGroupId(group.getGroupId());
+        groupDevice.setDevices(group.getDevices());
+        List<GroupDevice> groups = new ArrayList<>();
+        groups.add(groupDevice);
+        return new ResponseEntity<>(new GroupDeviceList(groups), HttpStatus.OK);
     }
 
     @RequestMapping(path = channels, method = RequestMethod.POST)
-    public void createChannel() {
-
+    public ResponseEntity<IdStatus> createChannel(@PathVariable("groupid") int groupId, @RequestBody ChannelRequest channelRequest) {
+        Channel channel = new Channel();
+        channel.setChannelName(channelRequest.getName());
+        channel.setTitle(channelRequest.getTitle());
+        channel.setText(channelRequest.getText());
+        channel.setRefreshTime(channelRequest.getRefreshTime());
+        int channelId = repository.createChannel(groupId, channel);
+        return new ResponseEntity<>(new IdStatus(channelId, "create was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = channels, method = RequestMethod.GET)

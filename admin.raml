@@ -322,6 +322,12 @@ documentation:
         minimum: 1
     post:
         description: create new device id
+        body:
+          application/json:
+            example: |
+              {
+                "userId": 900    
+              }
         responses:
           201:
             body:
@@ -439,6 +445,16 @@ documentation:
         minimum: 1
     post:
         description: create new channels id
+        body:
+          application/json:
+            example: |
+              {
+                "name":"weather",
+                "title":"Weather",
+                "secure":"true",
+                "text":"Marietta, GA",
+                "refresh_time":50
+              }
         responses:
           201:
             body:
@@ -546,7 +562,7 @@ documentation:
               application/json:
                 example: |
                   {
-                    "channelid":1,
+                    "id":1,
                     "status":"update was successful"
                   }
           400:
@@ -588,13 +604,19 @@ documentation:
         minimum: 1
     post:
         description: create new channels id
+        body:
+          application/json:
+            example: |
+              {
+                "text":"Your rent is due by 01/01/1111"    
+              }
         responses:
           201:
             body:
               application/json:
                 example: |
                   {
-                    "channelid":1,
+                    "id":1,
                     "status":"Create was successful."
                   }    
           400:
@@ -677,7 +699,7 @@ documentation:
           application/json:
             example: |
               {
-                "text":"text":"Your rent is due by 01/01/1111"    
+                "text":"Your rent is due by 01/01/1111"    
               }
         responses:
           200:
@@ -685,7 +707,7 @@ documentation:
               application/json:
                 example: |
                   {
-                    "messageid":1,
+                    "id":1,
                     "status":"update was successful"
                   }
           400:
@@ -703,7 +725,7 @@ documentation:
               application/json:
                 example: |
                   {
-                    "messageid":1,
+                    "id":1,
                     "status":"delete was successful"
                   }
           400:

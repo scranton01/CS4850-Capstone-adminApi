@@ -3,8 +3,9 @@ package kennesawstate.cs4850.tallulah.application.Request;
 import lombok.Data;
 
 @Data
-public class UserRequest {
+public class ChannelRequest {
     String name;
-    String email;
-    String userType;
+    String title;
+    String text;
+    Long refreshTime;
 }
