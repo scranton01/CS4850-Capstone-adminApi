@@ -4,8 +4,9 @@ import lombok.Data;
 
 @Data
 public class ChannelRequest {
-    String name;
+    String channelName;
     String title;
     String text;
-    Long refreshTime;
+    long refreshTime;
+    String channelType;
 }

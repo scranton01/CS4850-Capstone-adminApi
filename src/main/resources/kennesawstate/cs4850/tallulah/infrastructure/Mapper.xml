@@ -76,7 +76,7 @@
         WHERE GROUPS.GROUP_ID = #{groupId}
         AND GROUPS.USER_ID = #{userId}
     </select>
-    <insert id="createDevice" parameterType="map">
+    <insert id="createDevice" parameterType="int">
         INSERT INTO DEVICES (DEVICE_ID, USER_ID, USER_NAME)
         SELECT DEVICE_SEQUENCE.NEXTVAL, USER_ID,
         USER_NAME
@@ -120,8 +120,8 @@
         AND GROUPS.DEVICE_ID = #{deviceId}
     </select>
     <insert id="createChannel" parameterType="kennesawstate.cs4850.tallulah.domain.Channel">
-        INSERT INTO CHANNELS (CHANNEL_ID, CHANNEL_NAME, TITLE, TEXT, REFRESH_TIME)
-        VALUES (CHANNEL_SEQUENCE.NEXTVAL, #{channelName}, #{title}, #{text}, #{refreshTime}, #{channelType}
+        INSERT INTO CHANNELS (CHANNEL_ID, CHANNEL_NAME, TITLE, TEXT, REFRESH_TIME, CHANNEL_TYPE)
+        VALUES (CHANNEL_SEQUENCE.NEXTVAL, #{channelName}, #{title}, #{text}, #{refreshTime}, #{channelType})
     </insert>
     <insert id="addChannelToGroup" parameterType="map">
         INSERT INTO GROUPS (GROUP_ID, USER_ID, DEVICE_ID, CHANNEL_ID, MESSAGE_ID)
@@ -130,8 +130,64 @@
     <select id="findLatestChannelId" resultType="int">
         SELECT CHANNEL_SEQUENCE.CURRVAL FROM DUAL
     </select>
+    <select id="findChannelInGroup" parameterType="int" resultMap="groupChannelResultMap">
+        SELECT
+        GROUPS.GROUP_ID,
+        GROUPS.CHANNEL_ID,
+        CHANNELS.CHANNEL_NAME,
+        CHANNELS.TITLE,
+        CHANNELS.TEXT,
+        CHANNELS.REFRESH_TIME,
+        CHANNELS.CHANNEL_TYPE
+        FROM CHANNELS
+        INNER JOIN GROUPS
+        ON CHANNELS.CHANNEL_ID = GROUPS.CHANNEL_ID
+        WHERE GROUPS.GROUP_ID = #{groupId}
+    </select>
+    <delete id="deleteChannel" parameterType="int">
+        DELETE FROM CHANNELS WHERE CHANNEL_ID = #{channelId}
+    </delete>
+    <delete id="deleteChannelInGroup" parameterType="map">
+        DELETE FROM GROUPS WHERE GROUP_ID = #{groupId} AND CHANNEL_ID = #{channelId}
+    </delete>
+    <update id="updateChannel" parameterType="map">
+        UPDATE CHANNELS
+        SET
+        channel_name = #{channel.channelName},
+        TITLE = #{channel.title},
+        TEXT = #{channel.text},
+        REFRESH_TIME = #{channel.refreshTime},
+        CHANNEL_TYPE = #{channel.channelType}
+        WHERE CHANNEL_ID = #{channelId}
+    </update>
+    <select id="findChannelInGroupBy" parameterType="map" resultMap="groupChannelResultMap">
+        SELECT
+        GROUPS.GROUP_ID,
+        GROUPS.CHANNEL_ID,
+        CHANNELS.CHANNEL_NAME,
+        CHANNELS.TITLE,
+        CHANNELS.TEXT,
+        CHANNELS.REFRESH_TIME,
+        CHANNELS.CHANNEL_TYPE
+        FROM CHANNELS
+        INNER JOIN GROUPS
+        ON CHANNELS.CHANNEL_ID = GROUPS.CHANNEL_ID
+        WHERE GROUPS.GROUP_ID = #{groupId}
+        AND GROUPS.CHANNEL_ID = #{channelId}
+    </select>
 
 
+    <resultMap id="groupChannelResultMap" type="kennesawstate.cs4850.tallulah.domain.Group">
+        <id property="groupId" column="GROUP_ID"/>
+        <collection property="channels" ofType="kennesawstate.cs4850.tallulah.domain.Channel">
+            <id property="channelId" column="CHANNEL_ID"/>
+            <result property="channelName" column="CHANNEL_NAME"/>
+            <result property="title" column="TITLE"/>
+            <result property="text" column="TEXT"/>
+            <result property="refreshTime" column="REFRESH_TIME"/>
+            <result property="channelType" column="CHANNEL_TYPE"/>
+        </collection>
+    </resultMap>
     <resultMap id="userResultMap" type="kennesawstate.cs4850.tallulah.domain.User">
         <id property="userId" column="USER_ID"/>
         <result property="userName" column="USER_NAME"/>

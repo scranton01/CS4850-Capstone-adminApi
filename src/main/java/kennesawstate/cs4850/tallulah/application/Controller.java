@@ -1,10 +1,9 @@
 package kennesawstate.cs4850.tallulah.application;
 
 
-import kennesawstate.cs4850.tallulah.application.Request.ChannelRequest;
-import kennesawstate.cs4850.tallulah.application.Request.LoginDetail;
-import kennesawstate.cs4850.tallulah.application.Request.UserRequest;
+import kennesawstate.cs4850.tallulah.application.Request.*;
 import kennesawstate.cs4850.tallulah.application.Response.*;
+import kennesawstate.cs4850.tallulah.application.Response.UserId;
 import kennesawstate.cs4850.tallulah.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,7 @@ public class Controller {
     private static final String devices = "/apiadmin/1/groups/{groupid}/devices";
     private static final String devicesId = "/apiadmin/1/groups/{groupid}/devices/{deviceid}";
     private static final String channels = "/apiadmin/1/groups/{groupid}/channels";
-    private static final String channelsId = "/apiadmin/1/groups/{groupid}/channels/{chennelid}";
+    private static final String channelsId = "/apiadmin/1/groups/{groupid}/channels/{channelid}";
     private static final String messages = "/apiadmin/1/groups/{groupid}/messages";
     private static final String messagesId = "/apiadmin/1/groups/{groupid}/messages/{messageid}";
 
@@ -171,8 +170,8 @@ public class Controller {
     }
 
     @RequestMapping(path = devices, method = RequestMethod.POST)
-    public ResponseEntity<IdStatus> createDevice(@PathVariable("groupid") int groupId, @RequestBody UserId userId) {
-        int deviceId = repository.createDevice(groupId, userId.getUserid());
+    public ResponseEntity<IdStatus> createDevice(@PathVariable("groupid") int groupId, @RequestBody UserIdRequest userIdRequest) {
+        int deviceId = repository.createDevice(groupId, userIdRequest.getUserId());
         return new ResponseEntity<>(new IdStatus(deviceId, "create was successful"), HttpStatus.OK);
     }
 
@@ -207,32 +206,53 @@ public class Controller {
     @RequestMapping(path = channels, method = RequestMethod.POST)
     public ResponseEntity<IdStatus> createChannel(@PathVariable("groupid") int groupId, @RequestBody ChannelRequest channelRequest) {
         Channel channel = new Channel();
-        channel.setChannelName(channelRequest.getName());
+        channel.setChannelName(channelRequest.getChannelName());
         channel.setTitle(channelRequest.getTitle());
         channel.setText(channelRequest.getText());
         channel.setRefreshTime(channelRequest.getRefreshTime());
+        channel.setChannelType(ChannelType.valueOf(channelRequest.getChannelType()));
         int channelId = repository.createChannel(groupId, channel);
         return new ResponseEntity<>(new IdStatus(channelId, "create was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = channels, method = RequestMethod.GET)
-    public void findChannels() {
-
+    public ResponseEntity<GroupChannelList> findChannels(@PathVariable("groupid") int groupId) {
+        Group group = repository.findChannelInGroup(groupId);
+        GroupChannel groupChannel = new GroupChannel();
+        groupChannel.setGroupId(group.getGroupId());
+        groupChannel.setChannels(group.getChannels());
+        List<GroupChannel> groups = new ArrayList<>();
+        groups.add(groupChannel);
+        return new ResponseEntity<>(new GroupChannelList(groups), HttpStatus.OK);
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.DELETE)
-    public void deleteChannel() {
-
+    public ResponseEntity<IdStatus> deleteChannel(@PathVariable("groupid") int groupId, @PathVariable("channelid") int channelId) {
+        repository.deleteChannel(groupId, channelId);
+        return new ResponseEntity<>(new IdStatus(channelId,"delete was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.PUT)
-    public void updateChannel() {
-
+    public ResponseEntity<IdStatus> updateChannel(@PathVariable("channelid") int channelId, @RequestBody ChannelRequest channelRequest) {
+        Channel channel = new Channel();
+        channel.setChannelName(channelRequest.getChannelName());
+        channel.setTitle(channelRequest.getTitle());
+        channel.setText(channelRequest.getText());
+        channel.setRefreshTime(channelRequest.getRefreshTime());
+        channel.setChannelType(ChannelType.valueOf(channelRequest.getChannelType()));
+        repository.updateChannel(channelId,channel);
+        return new ResponseEntity<>(new IdStatus(channelId,"update was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.GET)
-    public void findChannelBy() {
-
+    public ResponseEntity<GroupChannelList> findChannelBy(@PathVariable("groupid") int groupId, @PathVariable("channelid") int channelId) {
+        Group group = repository.findChannelInGroupBy(groupId, channelId);
+        GroupChannel groupChannel = new GroupChannel();
+        groupChannel.setGroupId(group.getGroupId());
+        groupChannel.setChannels(group.getChannels());
+        List<GroupChannel> groups = new ArrayList<>();
+        groups.add(groupChannel);
+        return new ResponseEntity<>(new GroupChannelList(groups), HttpStatus.OK);
     }
 
     @RequestMapping(path = messages, method = RequestMethod.POST)

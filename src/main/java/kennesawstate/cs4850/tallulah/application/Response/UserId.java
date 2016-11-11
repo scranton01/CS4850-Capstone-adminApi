@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class UserId {
-    int userid;
+    int userId;
 }

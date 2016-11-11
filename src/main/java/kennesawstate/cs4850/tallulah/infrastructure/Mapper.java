@@ -42,7 +42,7 @@ public interface Mapper {
 
     Group findUserInGroupBy(@Param("groupId") int groupId, @Param("userId") int userId);
 
-    int createDevice(@Param("userId") int userId);
+    int createDevice(int userId);
 
     int addDeviceToGroup(@Param("groupId") int groupId);
 
@@ -61,4 +61,15 @@ public interface Mapper {
     int addChannelToGroup(@Param("groupId") int groupId);
 
     int findLatestChannelId();
+
+    Group findChannelInGroup(int groupId);
+
+    int deleteChannel(int channelId);
+
+    int deleteChannelInGroup(@Param("groupId") int groupId, @Param("channelId") int channelId);
+
+    int updateChannel(@Param("channelId") int channelId, @Param("channel") Channel channel);
+
+    Group findChannelInGroupBy(@Param("groupId") int groupId, @Param("channelId") int channelId);
+
 }

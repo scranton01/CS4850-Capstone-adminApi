@@ -107,7 +107,6 @@ public class InfraService {
     }
 
 
-
     public Group findDeviceInGroup(int groupId) {
         Group group = mapper.findDeviceInGroup(groupId);
         group.setDevices(group.getDevices()
@@ -132,4 +131,25 @@ public class InfraService {
         return mapper.findLatestChannelId();
     }
 
+    public Group findChannelInGroup(int groupId) {
+        Group group = mapper.findChannelInGroup(groupId);
+        group.setChannels(group.getChannels()
+                .stream()
+                .filter(i -> i.getChannelId() != 0)
+                .collect(Collectors.toList()));
+        return group;
+    }
+
+    public int deleteChannel(int groupId, int channelId){
+        mapper.deleteChannelInGroup(groupId,channelId);
+        return mapper.deleteChannel(channelId);
+    }
+
+    public int updateChannel(int channelId, Channel channel){
+        return mapper.updateChannel(channelId, channel);
+    }
+
+    public Group findChannelInGroupBy(int groupId, int deviceId) {
+        return mapper.findChannelInGroupBy(groupId, deviceId);
+    }
 }

@@ -41,4 +41,16 @@ public interface Repository {
     Group findDeviceInGroupBy(int groupId, int deviceId);
 
     int createChannel(int groupId, Channel channel);
+
+    Group findChannelInGroup(int groupId);
+
+    void deleteChannel(int groupId, int channelId);
+
+    void updateChannel(int channelId, Channel channel);
+
+    Group findChannelInGroupBy(int groupId, int channelId);
+
+
+
+
 }

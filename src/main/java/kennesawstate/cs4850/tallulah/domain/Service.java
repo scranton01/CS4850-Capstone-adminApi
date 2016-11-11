@@ -88,4 +88,20 @@ public class Service implements Repository {
     public int createChannel(int groupId, Channel channel) {
         return infraService.createChannel(groupId, channel);
     }
+
+    public Group findChannelInGroup(int groupId) {
+        return infraService.findChannelInGroup(groupId);
+    }
+
+    public void deleteChannel(int groupId, int channelId) {
+        infraService.deleteChannel(groupId, channelId);
+    }
+
+    public void updateChannel(int channelId, Channel channel){
+        infraService.updateChannel(channelId, channel);
+    }
+
+    public Group findChannelInGroupBy(int groupId, int channelId) {
+        return infraService.findChannelInGroupBy(groupId, channelId);
+    }
 }
