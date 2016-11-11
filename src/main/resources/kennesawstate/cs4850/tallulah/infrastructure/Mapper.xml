@@ -26,6 +26,14 @@
     <delete id="deleteUserBy" parameterType="int">
         DELETE FROM USERS WHERE USER_ID = #{userId}
     </delete>
+    <delete id="deleteUserFromGroup" parameterType="int">
+        DELETE FROM GROUPS WHERE USER_ID = #{userId}
+    </delete>
+    <update id="removeUserFromDevice" parameterType="int">
+        UPDATE DEVICES
+        SET USER_ID = 0
+        WHERE USER_ID = #{userId}
+    </update>
     <select id="findCurrentGroupId" resultType="int">
         SELECT GROUP_SEQUENCE.CURRVAL FROM DUAL
     </select>
@@ -175,8 +183,64 @@
         WHERE GROUPS.GROUP_ID = #{groupId}
         AND GROUPS.CHANNEL_ID = #{channelId}
     </select>
+    <insert id="createMessage" parameterType="kennesawstate.cs4850.tallulah.domain.Message">
+        INSERT INTO MESSAGES (MESSAGE_ID, TEXT, PRIORITY)
+        VALUES (MESSAGE_SEQUENCE.NEXTVAL, #{text}, #{priority})
+    </insert>
+    <insert id="addMessageToGroup" parameterType="int">
+        INSERT INTO GROUPS (GROUP_ID, USER_ID, DEVICE_ID, CHANNEL_ID, MESSAGE_ID)
+        VALUES (#{groupId}, 0, 0, 0, MESSAGE_SEQUENCE.CURRVAL)
+    </insert>
+    <select id="findLatestMessageId" resultType="int">
+        SELECT MESSAGE_SEQUENCE.CURRVAL FROM DUAL
+    </select>
+    <select id="findMessageInGroup" parameterType="int" resultMap="groupMessageResultMap">
+        SELECT
+        GROUPS.GROUP_ID,
+        GROUPS.MESSAGE_ID,
+        MESSAGES.TEXT,
+        MESSAGES.PRIORITY
+        FROM MESSAGES
+        INNER JOIN GROUPS
+        ON MESSAGES.MESSAGE_ID = GROUPS.MESSAGE_ID
+        WHERE GROUPS.GROUP_ID = #{groupId}
+    </select>
+    <delete id="deleteMessage" parameterType="int">
+        DELETE FROM MESSAGES CHANNELS WHERE MESSAGE_ID = #{messageId}
+    </delete>
+    <delete id="deleteMessageInGroup" parameterType="map">
+        DELETE FROM GROUPS WHERE GROUP_ID = #{groupId}
+        AND MESSAGE_ID = #{messageId}
+    </delete>
+    <update id="updateMessage" parameterType="map">
+        UPDATE MESSAGES
+        SET
+        TEXT = #{message.text},
+        PRIORITY = #{message.priority}
+        WHERE MESSAGE_ID = #{messageId}
+    </update>
+    <select id="findMessageInGroupBy" parameterType="map" resultMap="groupMessageResultMap">
+        SELECT
+        GROUPS.GROUP_ID,
+        GROUPS.MESSAGE_ID,
+        MESSAGES.TEXT,
+        MESSAGES.PRIORITY
+        FROM MESSAGES
+        INNER JOIN GROUPS
+        ON MESSAGES.MESSAGE_ID = GROUPS.MESSAGE_ID
+        WHERE GROUPS.GROUP_ID = #{groupId}
+        AND GROUPS.MESSAGE_ID = #{messageId}
+    </select>
 
 
+    <resultMap id="groupMessageResultMap" type="kennesawstate.cs4850.tallulah.domain.Group">
+        <id property="groupId" column="GROUP_ID"/>
+        <collection property="messages" ofType="kennesawstate.cs4850.tallulah.domain.Message">
+            <id property="messageId" column="MESSAGE_ID"/>
+            <result property="text" column="TEXT"/>
+            <result property="priority" column="PRIORITY"/>
+        </collection>
+    </resultMap>
     <resultMap id="groupChannelResultMap" type="kennesawstate.cs4850.tallulah.domain.Group">
         <id property="groupId" column="GROUP_ID"/>
         <collection property="channels" ofType="kennesawstate.cs4850.tallulah.domain.Channel">
@@ -241,7 +305,7 @@
         <collection property="messages" ofType="kennesawstate.cs4850.tallulah.domain.Message">
             <id property="messageId" column="MESSAGE_ID"/>
             <result property="text" column="TEXT"/>
-            <result property="priorityNumber" column="PRIORITY"/>
+            <result property="priority" column="PRIORITY"/>
         </collection>
     </resultMap>
 </mapper>

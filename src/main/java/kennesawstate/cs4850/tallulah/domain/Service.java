@@ -1,6 +1,7 @@
 package kennesawstate.cs4850.tallulah.domain;
 
 
+import kennesawstate.cs4850.tallulah.application.NotFoundException;
 import kennesawstate.cs4850.tallulah.infrastructure.InfraService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,11 +26,17 @@ public class Service implements Repository {
     }
 
     public User findUserBy(int userId) {
-        return infraService.findUserBy(userId);
+        User user = infraService.findUserBy(userId);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        return user;
     }
 
-    public Integer deleteUserBy(int userId) {
-        return infraService.deleteUserBy(userId);
+    public void deleteUserBy(int userId) {
+        if (infraService.deleteUserBy(userId) == 0) {
+            throw new NotFoundException();
+        }
     }
 
     public Integer createGroupId() {
@@ -40,12 +47,18 @@ public class Service implements Repository {
         return infraService.findAllGroupId();
     }
 
-    public Integer deleteGroupBy(int groupId) {
-        return infraService.deleteGroupBy(groupId);
+    public void deleteGroupBy(int groupId) {
+        if (infraService.deleteGroupBy(groupId) == 0) {
+            throw new NotFoundException();
+        }
     }
 
     public Group findGroupBy(int groupId) {
-        return infraService.findGroupBy(groupId);
+        Group group = infraService.findGroupBy(groupId);
+        if (group == null) {
+            throw new NotFoundException();
+        }
+        return group;
     }
 
     public List<User> findUserByGroupId(int groupId) {
@@ -53,36 +66,59 @@ public class Service implements Repository {
     }
 
     public void removeUserFromGroup(int groupId, int userId) {
-        infraService.removeUserFromGroup(groupId, userId);
+        if (infraService.removeUserFromGroup(groupId, userId) == 0) {
+            throw new NotFoundException();
+        }
     }
 
     public void updateLoginDetail(int userId, String loginDetail) {
-        infraService.updateLoginDetail(userId, loginDetail);
+        if (infraService.updateLoginDetail(userId, loginDetail) == 0) {
+            throw new NotFoundException();
+        }
     }
 
     public void addUserToGroup(int groupId, int userId) {
-        infraService.addUserToGroup(groupId, userId);
+        if (infraService.addUserToGroup(groupId, userId) == 0) {
+            throw new NotFoundException();
+        }
     }
 
     public Group findUserInGroupBy(int groupId, int userId) {
-        return infraService.findUserInGroupBy(groupId, userId);
+        Group group = infraService.findUserInGroupBy(groupId, userId);
+        if (group == null) {
+            throw new NotFoundException();
+        }
+        return group;
     }
 
     public int createDevice(int groupId, int userId) {
+        if (infraService.findUserInGroupBy(groupId, userId) == null) {
+            throw new NotFoundException();
+        }
         return infraService.createDevice(groupId, userId);
     }
 
 
     public Group findDeviceInGroup(int groupId) {
-        return infraService.findDeviceInGroup(groupId);
+        Group group = infraService.findDeviceInGroup(groupId);
+        if (group == null) {
+            throw new NotFoundException();
+        }
+        return group;
     }
 
     public void deleteDevice(int groupId, int deviceId) {
-        infraService.deleteDevice(groupId, deviceId);
+        if (infraService.deleteDevice(groupId, deviceId) == 0) {
+            throw new NotFoundException();
+        }
     }
 
     public Group findDeviceInGroupBy(int groupId, int deviceId) {
-        return infraService.findDeviceInGroupBy(groupId, deviceId);
+        Group group = infraService.findDeviceInGroupBy(groupId, deviceId);
+        if (group == null) {
+            throw new NotFoundException();
+        }
+        return group;
     }
 
     public int createChannel(int groupId, Channel channel) {
@@ -94,14 +130,52 @@ public class Service implements Repository {
     }
 
     public void deleteChannel(int groupId, int channelId) {
-        infraService.deleteChannel(groupId, channelId);
+        if (infraService.deleteChannel(groupId, channelId) == 0) {
+            throw new NotFoundException();
+        }
     }
 
-    public void updateChannel(int channelId, Channel channel){
-        infraService.updateChannel(channelId, channel);
+    public void updateChannel(int channelId, Channel channel) {
+        if (infraService.updateChannel(channelId, channel) == 0) {
+            throw new NotFoundException();
+        }
     }
 
     public Group findChannelInGroupBy(int groupId, int channelId) {
-        return infraService.findChannelInGroupBy(groupId, channelId);
+        Group group = infraService.findChannelInGroupBy(groupId, channelId);
+        if (group == null) {
+            throw new NotFoundException();
+        }
+        return group;
     }
+
+    public int createMessage(int groupId, Message message) {
+        return infraService.createMessage(groupId, message);
+    }
+
+    public Group findMessageInGroup(int groupId) {
+        return infraService.findMessageInGroup(groupId);
+    }
+
+    public void deleteMessage(int groupId, int messageId) {
+        if (infraService.deleteMessage(groupId, messageId) == 0) {
+            throw new NotFoundException();
+        }
+    }
+
+    public void updateMessage(int messageId, Message message) {
+        if (infraService.updateMessage(messageId, message) == 0) {
+            throw new NotFoundException();
+        }
+    }
+
+    public Group findMessageInGroupBy(int groupId, int messageId) {
+        Group group = infraService.findMessageInGroupBy(groupId, messageId);
+        if (group == null) {
+            throw new NotFoundException();
+        }
+        return group;
+    }
+
+
 }

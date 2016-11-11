@@ -1,9 +1,6 @@
 package kennesawstate.cs4850.tallulah.infrastructure;
 
-import kennesawstate.cs4850.tallulah.domain.Channel;
-import kennesawstate.cs4850.tallulah.domain.Group;
-import kennesawstate.cs4850.tallulah.domain.Sample;
-import kennesawstate.cs4850.tallulah.domain.User;
+import kennesawstate.cs4850.tallulah.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -34,8 +31,9 @@ public class InfraService {
     }
 
     public int deleteUserBy(int userId) {
-        mapper.deleteUserBy(userId);
-        return userId;
+        mapper.removeUserFromDevice(userId);
+        mapper.deleteUserFromGroup(userId);
+        return mapper.deleteUserBy(userId);
     }
 
     public int createGroupId() {
@@ -140,16 +138,44 @@ public class InfraService {
         return group;
     }
 
-    public int deleteChannel(int groupId, int channelId){
-        mapper.deleteChannelInGroup(groupId,channelId);
+    public int deleteChannel(int groupId, int channelId) {
+        mapper.deleteChannelInGroup(groupId, channelId);
         return mapper.deleteChannel(channelId);
     }
 
-    public int updateChannel(int channelId, Channel channel){
+    public int updateChannel(int channelId, Channel channel) {
         return mapper.updateChannel(channelId, channel);
     }
 
     public Group findChannelInGroupBy(int groupId, int deviceId) {
         return mapper.findChannelInGroupBy(groupId, deviceId);
+    }
+
+    public int createMessage(int groupId, Message message) {
+        mapper.createMessage(message);
+        mapper.addMessageToGroup(groupId);
+        return mapper.findLatestMessageId();
+    }
+
+    public Group findMessageInGroup(int groupId) {
+        Group group = mapper.findMessageInGroup(groupId);
+        group.setMessages(group.getMessages()
+                .stream()
+                .filter(i -> i.getMessageId() != 0)
+                .collect(Collectors.toList()));
+        return group;
+    }
+
+    public int deleteMessage(int groupId, int messageId) {
+        mapper.deleteMessageInGroup(groupId, messageId);
+        return mapper.deleteMessage(messageId);
+    }
+
+    public int updateMessage(int messageId, Message message) {
+        return mapper.updateMessage(messageId, message);
+    }
+
+    public Group findMessageInGroupBy(int groupId, int messageId) {
+        return mapper.findMessageInGroupBy(groupId, messageId);
     }
 }

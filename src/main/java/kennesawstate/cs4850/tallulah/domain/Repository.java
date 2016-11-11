@@ -11,13 +11,13 @@ public interface Repository {
 
     User findUserBy(int userId);
 
-    Integer deleteUserBy(int userId);
+    void deleteUserBy(int userId);
 
     Integer createGroupId();
 
     List<Integer> findAllGroupId();
 
-    Integer deleteGroupBy(int groupId);
+    void deleteGroupBy(int groupId);
 
     Group findGroupBy(int groupid);
 
@@ -32,7 +32,6 @@ public interface Repository {
     Group findUserInGroupBy(int groupId, int userId);
 
     int createDevice(int groupId, int userId);
-
 
     Group findDeviceInGroup(int groupId);
 
@@ -50,7 +49,13 @@ public interface Repository {
 
     Group findChannelInGroupBy(int groupId, int channelId);
 
+    int createMessage(int groupId, Message message);
 
+    Group findMessageInGroup(int groupId);
 
+    void deleteMessage(int groupId, int messageId);
 
+    void updateMessage(int messageId, Message message);
+
+    Group findMessageInGroupBy(int groupId, int messageId);
 }

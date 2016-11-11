@@ -112,15 +112,8 @@ public class Controller {
         List<MessageId> messageIdList = new ArrayList<>();
         group.getMessages().forEach(i -> messageIdList.add(new MessageId(i.getMessageId())));
 
-//        DetailGroupId detailGroupId = DetailGroupId.builder()
-//                .groupid(group.getGroupId())
-//                .users(userIdList)
-//                .devices(deviceIdList)
-//                .channels(channelIdList)
-//                .messages(messageIdList)
-//                .build();
         DetailGroupId detailGroupId = new DetailGroupId();
-        detailGroupId.setGroupid(group.getGroupId());
+        detailGroupId.setGroupId(group.getGroupId());
         detailGroupId.setUsers(userIdList);
         detailGroupId.setDevices(deviceIdList);
         detailGroupId.setChannels(channelIdList);
@@ -137,7 +130,7 @@ public class Controller {
     public ResponseEntity<GroupUserList> findUsersInGroup(@PathVariable("groupid") int groupId) {
         List<User> users = repository.findUserByGroupId(groupId);
         GroupUser groupUser = new GroupUser();
-        groupUser.setGroupid(groupId);
+        groupUser.setGroupId(groupId);
         groupUser.setUsers(users);
         List<GroupUser> groups = new ArrayList<>();
         groups.add(groupUser);
@@ -162,7 +155,7 @@ public class Controller {
     public ResponseEntity<GroupUserList> findUserInGroupBy(@PathVariable("groupid") int groupId, @PathVariable("userid") int userId) {
         Group group = repository.findUserInGroupBy(groupId, userId);
         GroupUser groupUser = new GroupUser();
-        groupUser.setGroupid(group.getGroupId());
+        groupUser.setGroupId(group.getGroupId());
         groupUser.setUsers(group.getUsers());
         List<GroupUser> groups = new ArrayList<>();
         groups.add(groupUser);
@@ -229,7 +222,7 @@ public class Controller {
     @RequestMapping(path = channelsId, method = RequestMethod.DELETE)
     public ResponseEntity<IdStatus> deleteChannel(@PathVariable("groupid") int groupId, @PathVariable("channelid") int channelId) {
         repository.deleteChannel(groupId, channelId);
-        return new ResponseEntity<>(new IdStatus(channelId,"delete was successful"), HttpStatus.OK);
+        return new ResponseEntity<>(new IdStatus(channelId, "delete was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.PUT)
@@ -240,8 +233,8 @@ public class Controller {
         channel.setText(channelRequest.getText());
         channel.setRefreshTime(channelRequest.getRefreshTime());
         channel.setChannelType(ChannelType.valueOf(channelRequest.getChannelType()));
-        repository.updateChannel(channelId,channel);
-        return new ResponseEntity<>(new IdStatus(channelId,"update was successful"), HttpStatus.OK);
+        repository.updateChannel(channelId, channel);
+        return new ResponseEntity<>(new IdStatus(channelId, "update was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.GET)
@@ -256,27 +249,48 @@ public class Controller {
     }
 
     @RequestMapping(path = messages, method = RequestMethod.POST)
-    public void createMessage() {
-
+    public ResponseEntity<IdStatus> createMessage(@PathVariable("groupid") int groupId, @RequestBody MessageRequest messageRequest) {
+        Message message = new Message();
+        message.setText(messageRequest.getText());
+        message.setPriority(messageRequest.getPriority());
+        int messageId = repository.createMessage(groupId, message);
+        return new ResponseEntity<>(new IdStatus(messageId, "create was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = messages, method = RequestMethod.GET)
-    public void findMessages() {
-
+    public ResponseEntity<GroupMessageList> findMessages(@PathVariable("groupid") int groupId) {
+        Group group = repository.findMessageInGroup(groupId);
+        GroupMessage groupMessage = new GroupMessage();
+        groupMessage.setGroupId(group.getGroupId());
+        groupMessage.setMessages(group.getMessages());
+        List<GroupMessage> groups = new ArrayList<>();
+        groups.add(groupMessage);
+        return new ResponseEntity<>(new GroupMessageList(groups), HttpStatus.OK);
     }
 
     @RequestMapping(path = messagesId, method = RequestMethod.DELETE)
-    public void deleteMessageBy() {
-
+    public ResponseEntity<IdStatus> deleteMessageBy(@PathVariable("groupid") int groupId, @PathVariable("messageid") int messageId) {
+        repository.deleteMessage(groupId, messageId);
+        return new ResponseEntity<>(new IdStatus(messageId, "delete was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = messagesId, method = RequestMethod.PUT)
-    public void updateMessageBy() {
-
+    public ResponseEntity<IdStatus> updateMessageBy(@PathVariable("messageid") int messageId, @RequestBody MessageRequest messageRequest) {
+        Message message = new Message();
+        message.setText(messageRequest.getText());
+        message.setPriority(messageRequest.getPriority());
+        repository.updateMessage(messageId, message);
+        return new ResponseEntity<IdStatus>(new IdStatus(messageId, "update was successful"), HttpStatus.OK);
     }
 
     @RequestMapping(path = messagesId, method = RequestMethod.GET)
-    public void findMessageBy() {
-
+    public ResponseEntity<GroupMessageList> findMessageBy(@PathVariable("groupid") int groupId, @PathVariable("messageid") int messageId) {
+        Group group = repository.findMessageInGroupBy(groupId, messageId);
+        GroupMessage groupMessage = new GroupMessage();
+        groupMessage.setGroupId(group.getGroupId());
+        groupMessage.setMessages(group.getMessages());
+        List<GroupMessage> groups = new ArrayList<>();
+        groups.add(groupMessage);
+        return new ResponseEntity<>(new GroupMessageList(groups), HttpStatus.OK);
     }
 }

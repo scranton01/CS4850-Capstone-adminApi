@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class ChannelId {
-    int channelid;
+    int channelId;
 }

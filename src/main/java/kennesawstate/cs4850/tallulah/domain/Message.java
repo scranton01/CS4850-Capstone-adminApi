@@ -6,5 +6,5 @@ import lombok.Data;
 public class Message {
     int messageId;
     String text;
-    int priorityNumber;
+    int priority;
 }

@@ -1,12 +1,12 @@
 package kennesawstate.cs4850.tallulah.application.Response;
 
-import kennesawstate.cs4850.tallulah.domain.User;
+import kennesawstate.cs4850.tallulah.domain.Message;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class GroupUser {
+public class GroupMessage {
     int groupId;
-    List<User> users;
+    List<Message> messages;
 }

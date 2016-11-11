@@ -1,9 +1,6 @@
 package kennesawstate.cs4850.tallulah.infrastructure;
 
-import kennesawstate.cs4850.tallulah.domain.Channel;
-import kennesawstate.cs4850.tallulah.domain.Group;
-import kennesawstate.cs4850.tallulah.domain.Sample;
-import kennesawstate.cs4850.tallulah.domain.User;
+import kennesawstate.cs4850.tallulah.domain.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -23,6 +20,10 @@ public interface Mapper {
     User findUserBy(int userId);
 
     int deleteUserBy(int userId);
+
+    int deleteUserFromGroup(int userId);
+
+    int removeUserFromDevice(int userId);
 
     int findCurrentGroupId();
 
@@ -71,5 +72,21 @@ public interface Mapper {
     int updateChannel(@Param("channelId") int channelId, @Param("channel") Channel channel);
 
     Group findChannelInGroupBy(@Param("groupId") int groupId, @Param("channelId") int channelId);
+
+    int createMessage(Message message);
+
+    int addMessageToGroup(int groupId);
+
+    int findLatestMessageId();
+
+    Group findMessageInGroup(int groupId);
+
+    int deleteMessage(int messageId);
+
+    int deleteMessageInGroup(@Param("groupId") int groupId, @Param("messageId") int messageId);
+
+    int updateMessage(@Param("messageId") int messageId, @Param("message") Message message);
+
+    Group findMessageInGroupBy(@Param("groupId") int groupId, @Param("messageId") int messageId);
 
 }

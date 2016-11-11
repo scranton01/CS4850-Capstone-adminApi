@@ -27,7 +27,7 @@ documentation:
                   {
                     "users": [
                       {    
-                        "userid":1
+                        "userId":1
                       }
                     ]
                   }  
@@ -39,7 +39,7 @@ documentation:
               {
                 "name":"John Smith",
                 "email":"sample@company",        
-                "usertype":"admin"
+                "userType":"admin"
               }
         responses:
           201:
@@ -164,25 +164,25 @@ documentation:
                   {
                     "groups": [
                       {    
-                        "groupid":1,
+                        "groupId":1,
                         "users": [
                           {
-                            "userid":1
+                            "userId":1
                           }
                         ],
                         "devices": [
                           {    
-                            "deviceid":1
+                            "deviceId":1
                           }
                         ],
                         "channels": [
                           {
-                            "channelid":1
+                            "channelId":1
                           }
                         ],
                         "messages": [
                           {
-                            "messageid":1
+                            "messageId":1
                           }
                         ]
                       }
@@ -224,14 +224,14 @@ documentation:
                   {
                     "groups": [
                       {    
-                        "groupid":1,
+                        "groupId":1,
                         "users": [
                           {    
                             "userid":1,
                             "name":"John Smith",
                             "email":"sample@company.com",        
                             "loginDetail":"login details goes here",
-                            "usertype":"admin"
+                            "userType":"admin"
                           }
                         ]
                       }
@@ -266,14 +266,14 @@ documentation:
                   {
                     "groups": [
                       {    
-                        "groupid":1,
+                        "groupId":1,
                         "users": [
                           {    
                             "userid":1,
                             "name":"John Smith",
                             "email":"sample@company.com",        
                             "loginDetail":"login details goes here",
-                            "usertype":"admin"
+                            "userType":"admin"
                           }
                         ]
                       }
@@ -354,11 +354,11 @@ documentation:
                   {
                     "groups": [
                       {    
-                        "groupid":1,
+                        "groupId":1,
                         "devices": [
                           {    
-                            "deviceid":1,
-                            "ownerid":1,
+                            "deviceId":1,
+                            "ownerId":1,
                             "name":"resident1"
                             ]
                           }
@@ -401,11 +401,11 @@ documentation:
                   {
                     "groups": [
                       {    
-                        "groupid":1,
+                        "groupId":1,
                         "devices": [
                           {    
-                            "deviceid":1,
-                            "ownerid":1,
+                            "deviceId":1,
+                            "ownerId":1,
                             "name":"resident1"
                             ]
                           }
@@ -449,11 +449,11 @@ documentation:
           application/json:
             example: |
               {
-                "name":"weather",
+                "channelName":"weather",
                 "title":"Weather",
-                "secure":"true",
                 "text":"Marietta, GA",
-                "refresh_time":50
+                "refreshTime":50,
+                "channelType":"SLIDE"
               }
         responses:
           201:
@@ -474,15 +474,14 @@ documentation:
                   {
                     "groups": [
                       {    
-                        "groupid":1,
+                        "groupId":1,
                         "channels":[
                           {
-                            "channelid":1,
-                            "name":"weather",
+                            "channelName":"weather",
                             "title":"Weather",
-                            "secure":"true",
                             "text":"Marietta, GA",
-                            "refresh_time":50
+                            "refreshTime":50,
+                            "channelType":"SLIDE"
                           }
                         ]
                       }
@@ -523,15 +522,15 @@ documentation:
                   {
                     "groups": [
                       {    
-                        "groupid":1,
+                        "groupId":1,
                         "channels":[
                           {
-                            "channelid":1,
-                            "name":"weather",
+                            "channelId":1,
+                            "channelName":"weather",
                             "title":"Weather",
-                            "secure":"true",
                             "text":"Marietta, GA",
-                            "refresh_time":50
+                            "refreshTime":50,
+                            "channelType":"SLIDE"
                           }
                         ]
                       }
@@ -550,11 +549,11 @@ documentation:
           application/json:
             example: |
               {
-                "name":"weather",
+                "channelName":"weather",
                 "title":"Weather",
-                "secure":"true",
                 "text":"Marietta, GA",
-                "refresh_time":50
+                "refreshTime":50,
+                "channelType":"SLIDE"
               }
         responses:
           200:
@@ -608,7 +607,8 @@ documentation:
           application/json:
             example: |
               {
-                "text":"Your rent is due by 01/01/1111"    
+                "text":"Your rent is due by 01/01/1111",  
+                "priority":1  
               }
         responses:
           201:
@@ -636,12 +636,12 @@ documentation:
                   {
                     "groups": [
                       {    
-                        "groupid":1,
+                        "groupId":1,
                         "messages":[
                           {
-                            "messageid":1,
-                            "personid":1,
-                            "text":"Your rent is due by 01/01/1111"                                
+                            "messageId":1,
+                            "text":"Your rent is due by 01/01/1111",  
+                            "priority":1                                  
                           }
                         ]
                       }
@@ -675,12 +675,12 @@ documentation:
                   {
                     "groups": [
                       {    
-                        "groupid":1,
+                        "groupId":1,
                         "messages":[
                           {
-                            "messageid":1,
-                            "personid":1,
-                            "text":"Your rent is due by 01/01/1111"                                
+                            "messageId":1,
+                            "text":"Your rent is due by 01/01/1111",  
+                            "priority":1                                  
                           }
                         ]
                       }
@@ -699,7 +699,8 @@ documentation:
           application/json:
             example: |
               {
-                "text":"Your rent is due by 01/01/1111"    
+                "text":"Your rent is due by 01/01/1111",  
+                "priority":1      
               }
         responses:
           200:
