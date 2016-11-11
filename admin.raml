@@ -1,0 +1,738 @@
+#%RAML 0.8
+title: API-adminPage 
+baseUri: http://tallulah
+version: 1.0
+documentation:
+  - title: overview
+    content: |
+      This is an internal API to retrieve device info, consume by administration page
+      
+/apiadmin:
+  displayName: api-adminPage
+  description: |
+    This collection of resources will enable database transaction by administration page
+  /{version}/users:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+    get:
+        description: retrieve all user id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "users": [
+                      {    
+                        "userId":1
+                      }
+                    ]
+                  }  
+    post:
+        description: create new person id
+        body:
+          application/json:
+            example: |
+              {
+                "name":"John Smith",
+                "email":"sample@company",        
+                "userType":"admin"
+              }
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"Create was successful."
+                  }   
+  /{version}/users/{userid}:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      userid:
+        type: number
+        description: user id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    get:
+        description: create new person id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "name":"John Smith",
+                    "email":"sample@company", 
+                    "loginDetail":"login details goes here",       
+                    "userType":"admin"
+                  }  
+    put:  
+        description: update user information
+        body:
+          application/json:
+            example: |
+              {
+                "loginDetail":"login details goes here"    
+              }
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"update was successful"
+                  }
+    delete:
+        description: delete person information
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"delete was successful"
+                  }
+  /{version}/groups:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+    post:
+        description: create a new group id
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"create was successful."
+                  } 
+    get:
+        description: get all group id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupid":1
+                      }
+                    ]
+                  } 
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"no id found"
+                  } 
+  /{version}/groups/{groupid}:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      groupid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    get:
+        description: get device information for specified id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "users": [
+                          {
+                            "userId":1
+                          }
+                        ],
+                        "devices": [
+                          {    
+                            "deviceId":1
+                          }
+                        ],
+                        "channels": [
+                          {
+                            "channelId":1
+                          }
+                        ],
+                        "messages": [
+                          {
+                            "messageId":1
+                          }
+                        ]
+                      }
+                    ]
+                  } 
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified group id doesn't exist"
+                  } 
+    delete:
+        description: delete person information
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"delete was successful"
+                  }
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified group id doesn't exist"
+                  } 
+  /{version}/groups/{groupid}/users:       
+    get:
+        description: get all person id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "users": [
+                          {    
+                            "userid":1,
+                            "name":"John Smith",
+                            "email":"sample@company.com",        
+                            "loginDetail":"login details goes here",
+                            "userType":"admin"
+                          }
+                        ]
+                      }
+                    ]
+                  } 
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"no id found"
+                  } 
+  /{version}/groups/{groupid}/users/{userid}:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      userid:
+        type: number
+        description: person id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    get:
+        description: create new person id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "users": [
+                          {    
+                            "userid":1,
+                            "name":"John Smith",
+                            "email":"sample@company.com",        
+                            "loginDetail":"login details goes here",
+                            "userType":"admin"
+                          }
+                        ]
+                      }
+                    ]
+                  } 
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified person id doesn't exist"
+                  } 
+    delete:
+        description: remove specified user from group
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"delete was successful"
+                  }
+    post:
+        description: add specified user to the specified group
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"Create was successful."
+                  }   
+  /{version}/groups/{groupid}/devices:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      groupid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    post:
+        description: create new device id
+        body:
+          application/json:
+            example: |
+              {
+                "userId": 900    
+              }
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"Create was successful."
+                  }    
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    get:
+        description: get all device information for specified id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "devices": [
+                          {    
+                            "deviceId":1,
+                            "ownerId":1,
+                            "name":"resident1"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  } 
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+  /{version}/groups/{groupid}/device/{deviceid}:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      groupid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+      deviceid:
+        type: number
+        description: device id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    get:
+        description: get device information for specified id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "devices": [
+                          {    
+                            "deviceId":1,
+                            "ownerId":1,
+                            "name":"resident1"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  } 
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    delete:
+        description: delete device information
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"delete was successful"
+                  }
+  /{version}/groups/{groupid}/channels:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      groupid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    post:
+        description: create new channels id
+        body:
+          application/json:
+            example: |
+              {
+                "channelName":"weather",
+                "title":"Weather",
+                "text":"Marietta, GA",
+                "refreshTime":50,
+                "channelType":"SLIDE"
+              }
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"Create was successful."
+                  }  
+    get:
+        description: get channel information for specified id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "channels":[
+                          {
+                            "channelName":"weather",
+                            "title":"Weather",
+                            "text":"Marietta, GA",
+                            "refreshTime":50,
+                            "channelType":"SLIDE"
+                          }
+                        ]
+                      }
+                    ]
+                  }   
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+  /{version}/groups/{groupid}//channels/{channelid}:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      groupid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+      channelid:
+        type: number
+        description: channel id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    get:
+        description: get channel information for specified id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "channels":[
+                          {
+                            "channelId":1,
+                            "channelName":"weather",
+                            "title":"Weather",
+                            "text":"Marietta, GA",
+                            "refreshTime":50,
+                            "channelType":"SLIDE"
+                          }
+                        ]
+                      }
+                    ]
+                  } 
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    put:
+        description: update channel information
+        body:
+          application/json:
+            example: |
+              {
+                "channelName":"weather",
+                "title":"Weather",
+                "text":"Marietta, GA",
+                "refreshTime":50,
+                "channelType":"SLIDE"
+              }
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"update was successful"
+                  }
+          400:
+            body:  
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    delete:
+        description: delete channel information
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"delete was successful"
+                  }
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+  /{version}/groups/{groupid}/messages:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      groupid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    post:
+        description: create new channels id
+        body:
+          application/json:
+            example: |
+              {
+                "text":"Your rent is due by 01/01/1111",  
+                "priority":1  
+              }
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"Create was successful."
+                  }    
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    get:
+        description: get device information for specified id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "messages":[
+                          {
+                            "messageId":1,
+                            "text":"Your rent is due by 01/01/1111",  
+                            "priority":1                                  
+                          }
+                        ]
+                      }
+                    ]
+                  }
+  /{version}/groups/{groupid}/messages/{messageid}:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      groupid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+      messageid:
+        type: number
+        description: message id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    get:
+        description: get device information for specified id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "messages":[
+                          {
+                            "messageId":1,
+                            "text":"Your rent is due by 01/01/1111",  
+                            "priority":1                                  
+                          }
+                        ]
+                      }
+                    ]
+                  } 
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    put:
+        description: update channel information
+        body:
+          application/json:
+            example: |
+              {
+                "text":"Your rent is due by 01/01/1111",  
+                "priority":1      
+              }
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"update was successful"
+                  }
+          400:
+            body:  
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    delete:
+        description: delete message information
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"delete was successful"
+                  }
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
