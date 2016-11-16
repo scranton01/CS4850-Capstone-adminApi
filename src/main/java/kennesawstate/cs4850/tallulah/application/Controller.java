@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,6 +206,8 @@ public class Controller {
         channel.setRefreshTime(channelRequest.getRefreshTime());
         channel.setChannelType(ChannelType.valueOf(channelRequest.getChannelType()));
         int channelId = repository.createChannel(groupId, channel);
+
+
         return new ResponseEntity<>(new IdStatus(channelId, "create was successful"), HttpStatus.OK);
     }
 
@@ -216,7 +219,13 @@ public class Controller {
         groupChannel.setChannels(group.getChannels());
         List<GroupChannel> groups = new ArrayList<>();
         groups.add(groupChannel);
-        return new ResponseEntity<>(new GroupChannelList(groups), HttpStatus.OK);
+        GroupChannelList result = new GroupChannelList(groups);
+
+//        //consuming
+//        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.postForObject("https://blistering-fire-4554.firebaseio.com/testOrg/Channels.json", , GroupChannelList.class);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.DELETE)
