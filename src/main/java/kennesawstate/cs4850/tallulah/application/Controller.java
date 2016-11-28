@@ -288,7 +288,13 @@ public class Controller {
         groupChannel.setChannels(group.getChannels());
         List<GroupChannel> groups = new ArrayList<>();
         groups.add(groupChannel);
-        return new ResponseEntity<>(new GroupChannelList(groups), HttpStatus.OK);
+        GroupChannelList result = new GroupChannelList(groups);
+
+//        //consuming
+//        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.postForObject("https://blistering-fire-4554.firebaseio.com/testOrg/Channels.json", , GroupChannelList.class);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.DELETE)
