@@ -3,12 +3,12 @@ package kennesawstate.cs4850.tallulah.application;
 
 import kennesawstate.cs4850.tallulah.application.Request.*;
 import kennesawstate.cs4850.tallulah.application.Response.*;
-import kennesawstate.cs4850.tallulah.application.Response.UserId;
 import kennesawstate.cs4850.tallulah.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,6 +202,18 @@ public class Controller {
         message.setText(messageRequest.getText());
         message.setPriority(messageRequest.getPriority());
         int messageId = repository.createMessage(groupId, deviceId, message);
+        //calling firebase api
+        Group group = repository.findMessageInGroupBy(groupId, deviceId, messageId);
+        GroupMessage groupMessage = new GroupMessage();
+        groupMessage.setGroupId(group.getGroupId());
+        groupMessage.setDevices(group.getDevices());
+        groupMessage.setMessages(group.getMessages());
+        List<GroupMessage> groups = new ArrayList<>();
+        groups.add(groupMessage);
+        GroupMessageList groupMessageList = new GroupMessageList(groups);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForLocation("https://blistering-fire-4554.firebaseio.com/restApiTest.json",groupMessageList);
+        //
         return new ResponseEntity<>(new IdStatus(messageId, "create was successful"), HttpStatus.OK);
     }
 
@@ -241,7 +253,8 @@ public class Controller {
         groupMessage.setMessages(group.getMessages());
         List<GroupMessage> groups = new ArrayList<>();
         groups.add(groupMessage);
-        return new ResponseEntity<>(new GroupMessageList(groups), HttpStatus.OK);
+        GroupMessageList groupMessageList = new GroupMessageList(groups);
+        return new ResponseEntity<>(groupMessageList, HttpStatus.OK);
     }
 
     @RequestMapping(path = channels, method = RequestMethod.POST)
@@ -253,6 +266,17 @@ public class Controller {
         channel.setRefreshTime(channelRequest.getRefreshTime());
         channel.setChannelType(ChannelType.valueOf(channelRequest.getChannelType()));
         int channelId = repository.createChannel(groupId, channel);
+        //calling firebase api
+        Group group = repository.findChannelInGroupBy(groupId, channelId);
+        GroupChannel groupChannel = new GroupChannel();
+        groupChannel.setGroupId(group.getGroupId());
+        groupChannel.setChannels(group.getChannels());
+        List<GroupChannel> groups = new ArrayList<>();
+        groups.add(groupChannel);
+        GroupChannelList groupChannelList = new GroupChannelList(groups);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForLocation("https://blistering-fire-4554.firebaseio.com/restApiTest.json",groupChannelList);
+        //
         return new ResponseEntity<>(new IdStatus(channelId, "create was successful"), HttpStatus.OK);
     }
 
@@ -293,7 +317,8 @@ public class Controller {
         groupChannel.setChannels(group.getChannels());
         List<GroupChannel> groups = new ArrayList<>();
         groups.add(groupChannel);
-        return new ResponseEntity<>(new GroupChannelList(groups), HttpStatus.OK);
+        GroupChannelList groupChannelList = new GroupChannelList(groups);
+        return new ResponseEntity<>(groupChannelList, HttpStatus.OK);
     }
 
 
