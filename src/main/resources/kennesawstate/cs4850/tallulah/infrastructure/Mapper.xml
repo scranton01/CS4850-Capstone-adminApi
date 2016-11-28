@@ -189,7 +189,7 @@
     </insert>
     <insert id="addMessageToGroup" parameterType="int">
         INSERT INTO GROUPS (GROUP_ID, USER_ID, DEVICE_ID, CHANNEL_ID, MESSAGE_ID)
-        VALUES (#{groupId}, 0, 0, 0, MESSAGE_SEQUENCE.CURRVAL)
+        VALUES (#{groupId}, 0, #{deviceId}, 0, MESSAGE_SEQUENCE.CURRVAL)
     </insert>
     <select id="findLatestMessageId" resultType="int">
         SELECT MESSAGE_SEQUENCE.CURRVAL FROM DUAL
@@ -197,13 +197,19 @@
     <select id="findMessageInGroup" parameterType="int" resultMap="groupMessageResultMap">
         SELECT
         GROUPS.GROUP_ID,
+        GROUPS.DEVICE_ID,
+        DEVICES.USER_ID,
+        DEVICES.USER_NAME,
         GROUPS.MESSAGE_ID,
         MESSAGES.TEXT,
         MESSAGES.PRIORITY
-        FROM MESSAGES
+        FROM DEVICES
         INNER JOIN GROUPS
+        ON DEVICES.DEVICE_ID = GROUPS.DEVICE_ID
+        INNER JOIN MESSAGES
         ON MESSAGES.MESSAGE_ID = GROUPS.MESSAGE_ID
         WHERE GROUPS.GROUP_ID = #{groupId}
+        AND GROUPS.DEVICE_ID = #{deviceId}
     </select>
     <delete id="deleteMessage" parameterType="int">
         DELETE FROM MESSAGES CHANNELS WHERE MESSAGE_ID = #{messageId}
@@ -222,25 +228,37 @@
     <select id="findMessageInGroupBy" parameterType="map" resultMap="groupMessageResultMap">
         SELECT
         GROUPS.GROUP_ID,
+        GROUPS.DEVICE_ID,
+        DEVICES.USER_ID,
+        DEVICES.USER_NAME,
         GROUPS.MESSAGE_ID,
         MESSAGES.TEXT,
         MESSAGES.PRIORITY
-        FROM MESSAGES
+        FROM DEVICES
         INNER JOIN GROUPS
+        ON DEVICES.DEVICE_ID = GROUPS.DEVICE_ID
+        INNER JOIN MESSAGES
         ON MESSAGES.MESSAGE_ID = GROUPS.MESSAGE_ID
         WHERE GROUPS.GROUP_ID = #{groupId}
-        AND GROUPS.MESSAGE_ID = #{messageId}
+        AND GROUPS.DEVICE_ID = #{deviceId}
+        AND MESSAGES.MESSAGE_ID = #{messageId}
     </select>
 
 
     <resultMap id="groupMessageResultMap" type="kennesawstate.cs4850.tallulah.domain.Group">
         <id property="groupId" column="GROUP_ID"/>
+        <collection property="devices" ofType="kennesawstate.cs4850.tallulah.domain.Device">
+            <id property="deviceId" column="DEVICE_ID"/>
+            <result property="ownerId" column="USER_ID"/>
+            <result property="ownerName" column="USER_NAME"/>
+        </collection>
         <collection property="messages" ofType="kennesawstate.cs4850.tallulah.domain.Message">
             <id property="messageId" column="MESSAGE_ID"/>
             <result property="text" column="TEXT"/>
             <result property="priority" column="PRIORITY"/>
         </collection>
     </resultMap>
+
     <resultMap id="groupChannelResultMap" type="kennesawstate.cs4850.tallulah.domain.Group">
         <id property="groupId" column="GROUP_ID"/>
         <collection property="channels" ofType="kennesawstate.cs4850.tallulah.domain.Channel">

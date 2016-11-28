@@ -49,13 +49,13 @@ public interface Repository {
 
     Group findChannelInGroupBy(int groupId, int channelId);
 
-    int createMessage(int groupId, Message message);
+    int createMessage(int groupId, int deviceId, Message message);
 
-    Group findMessageInGroup(int groupId);
+    Group findMessageInGroup(int groupId, int deviceId);
 
     void deleteMessage(int groupId, int messageId);
 
     void updateMessage(int messageId, Message message);
 
-    Group findMessageInGroupBy(int groupId, int messageId);
+    Group findMessageInGroupBy(int groupId, int deviceId, int messageId);
 }
