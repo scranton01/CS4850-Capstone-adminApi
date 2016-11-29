@@ -75,11 +75,11 @@ public interface Mapper {
 
     int createMessage(Message message);
 
-    int addMessageToGroup(int groupId);
+    int addMessageToGroup(@Param("groupId") int groupId, @Param("deviceId") int deviceId);
 
     int findLatestMessageId();
 
-    Group findMessageInGroup(int groupId);
+    Group findMessageInGroup(@Param("groupId") int groupId, @Param("deviceId") int deviceId);
 
     int deleteMessage(int messageId);
 
@@ -87,6 +87,6 @@ public interface Mapper {
 
     int updateMessage(@Param("messageId") int messageId, @Param("message") Message message);
 
-    Group findMessageInGroupBy(@Param("groupId") int groupId, @Param("messageId") int messageId);
+    Group findMessageInGroupBy(@Param("groupId") int groupId, @Param("deviceId") int deviceId, @Param("messageId") int messageId);
 
 }

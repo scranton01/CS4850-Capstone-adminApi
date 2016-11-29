@@ -3,12 +3,12 @@ package kennesawstate.cs4850.tallulah.application;
 
 import kennesawstate.cs4850.tallulah.application.Request.*;
 import kennesawstate.cs4850.tallulah.application.Response.*;
-import kennesawstate.cs4850.tallulah.application.Response.UserId;
 import kennesawstate.cs4850.tallulah.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +24,10 @@ public class Controller {
     private static final String groupUsersId = "/apiadmin/1/groups/{groupid}/users/{userid}";
     private static final String devices = "/apiadmin/1/groups/{groupid}/devices";
     private static final String devicesId = "/apiadmin/1/groups/{groupid}/devices/{deviceid}";
+    private static final String messages = "/apiadmin/1/groups/{groupid}/devices/{deviceid}/messages";
+    private static final String messagesId = "/apiadmin/1/groups/{groupid}/devices/{deviceid}/messages/{messageid}";
     private static final String channels = "/apiadmin/1/groups/{groupid}/channels";
     private static final String channelsId = "/apiadmin/1/groups/{groupid}/channels/{channelid}";
-    private static final String messages = "/apiadmin/1/groups/{groupid}/messages";
-    private static final String messagesId = "/apiadmin/1/groups/{groupid}/messages/{messageid}";
 
 
     @Autowired
@@ -196,6 +196,67 @@ public class Controller {
         return new ResponseEntity<>(new GroupDeviceList(groups), HttpStatus.OK);
     }
 
+    @RequestMapping(path = messages, method = RequestMethod.POST)
+    public ResponseEntity<IdStatus> createMessage(@PathVariable("groupid") int groupId, @PathVariable("deviceid") int deviceId, @RequestBody MessageRequest messageRequest) {
+        Message message = new Message();
+        message.setText(messageRequest.getText());
+        message.setPriority(messageRequest.getPriority());
+        int messageId = repository.createMessage(groupId, deviceId, message);
+        //calling firebase api
+        Group group = repository.findMessageInGroupBy(groupId, deviceId, messageId);
+        GroupMessage groupMessage = new GroupMessage();
+        groupMessage.setGroupId(group.getGroupId());
+        groupMessage.setDevices(group.getDevices());
+        groupMessage.setMessages(group.getMessages());
+        List<GroupMessage> groups = new ArrayList<>();
+        groups.add(groupMessage);
+        GroupMessageList groupMessageList = new GroupMessageList(groups);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForLocation("https://blistering-fire-4554.firebaseio.com/restApiTest.json",groupMessageList);
+        //
+        return new ResponseEntity<>(new IdStatus(messageId, "create was successful"), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = messages, method = RequestMethod.GET)
+    public ResponseEntity<GroupMessageList> findMessages(@PathVariable("groupid") int groupId, @PathVariable("deviceid") int deviceId) {
+        Group group = repository.findMessageInGroup(groupId, deviceId);
+        GroupMessage groupMessage = new GroupMessage();
+        groupMessage.setGroupId(group.getGroupId());
+        groupMessage.setDevices(group.getDevices());
+        groupMessage.setMessages(group.getMessages());
+        List<GroupMessage> groups = new ArrayList<>();
+        groups.add(groupMessage);
+        return new ResponseEntity<>(new GroupMessageList(groups), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = messagesId, method = RequestMethod.DELETE)
+    public ResponseEntity<IdStatus> deleteMessageBy(@PathVariable("groupid") int groupId, @PathVariable("deviceid") int deviceId, @PathVariable("messageid") int messageId) {
+        repository.deleteMessage(groupId, messageId);
+        return new ResponseEntity<>(new IdStatus(messageId, "delete was successful"), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = messagesId, method = RequestMethod.PUT)
+    public ResponseEntity<IdStatus> updateMessageBy(@PathVariable("groupid") int groupId, @PathVariable("deviceid") int deviceId, @PathVariable("messageid") int messageId, @RequestBody MessageRequest messageRequest) {
+        Message message = new Message();
+        message.setText(messageRequest.getText());
+        message.setPriority(messageRequest.getPriority());
+        repository.updateMessage(messageId, message);
+        return new ResponseEntity<IdStatus>(new IdStatus(messageId, "update was successful"), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = messagesId, method = RequestMethod.GET)
+    public ResponseEntity<GroupMessageList> findMessageBy(@PathVariable("groupid") int groupId, @PathVariable("deviceid") int deviceId, @PathVariable("messageid") int messageId) {
+        Group group = repository.findMessageInGroupBy(groupId, deviceId, messageId);
+        GroupMessage groupMessage = new GroupMessage();
+        groupMessage.setGroupId(group.getGroupId());
+        groupMessage.setDevices(group.getDevices());
+        groupMessage.setMessages(group.getMessages());
+        List<GroupMessage> groups = new ArrayList<>();
+        groups.add(groupMessage);
+        GroupMessageList groupMessageList = new GroupMessageList(groups);
+        return new ResponseEntity<>(groupMessageList, HttpStatus.OK);
+    }
+
     @RequestMapping(path = channels, method = RequestMethod.POST)
     public ResponseEntity<IdStatus> createChannel(@PathVariable("groupid") int groupId, @RequestBody ChannelRequest channelRequest) {
         Channel channel = new Channel();
@@ -205,6 +266,17 @@ public class Controller {
         channel.setRefreshTime(channelRequest.getRefreshTime());
         channel.setChannelType(ChannelType.valueOf(channelRequest.getChannelType()));
         int channelId = repository.createChannel(groupId, channel);
+        //calling firebase api
+        Group group = repository.findChannelInGroupBy(groupId, channelId);
+        GroupChannel groupChannel = new GroupChannel();
+        groupChannel.setGroupId(group.getGroupId());
+        groupChannel.setChannels(group.getChannels());
+        List<GroupChannel> groups = new ArrayList<>();
+        groups.add(groupChannel);
+        GroupChannelList groupChannelList = new GroupChannelList(groups);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForLocation("https://blistering-fire-4554.firebaseio.com/restApiTest.json",groupChannelList);
+        //
         return new ResponseEntity<>(new IdStatus(channelId, "create was successful"), HttpStatus.OK);
     }
 
@@ -216,7 +288,13 @@ public class Controller {
         groupChannel.setChannels(group.getChannels());
         List<GroupChannel> groups = new ArrayList<>();
         groups.add(groupChannel);
-        return new ResponseEntity<>(new GroupChannelList(groups), HttpStatus.OK);
+        GroupChannelList result = new GroupChannelList(groups);
+
+//        //consuming
+//        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.postForObject("https://blistering-fire-4554.firebaseio.com/testOrg/Channels.json", , GroupChannelList.class);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(path = channelsId, method = RequestMethod.DELETE)
@@ -245,52 +323,9 @@ public class Controller {
         groupChannel.setChannels(group.getChannels());
         List<GroupChannel> groups = new ArrayList<>();
         groups.add(groupChannel);
-        return new ResponseEntity<>(new GroupChannelList(groups), HttpStatus.OK);
+        GroupChannelList groupChannelList = new GroupChannelList(groups);
+        return new ResponseEntity<>(groupChannelList, HttpStatus.OK);
     }
 
-    @RequestMapping(path = messages, method = RequestMethod.POST)
-    public ResponseEntity<IdStatus> createMessage(@PathVariable("groupid") int groupId, @RequestBody MessageRequest messageRequest) {
-        Message message = new Message();
-        message.setText(messageRequest.getText());
-        message.setPriority(messageRequest.getPriority());
-        int messageId = repository.createMessage(groupId, message);
-        return new ResponseEntity<>(new IdStatus(messageId, "create was successful"), HttpStatus.OK);
-    }
 
-    @RequestMapping(path = messages, method = RequestMethod.GET)
-    public ResponseEntity<GroupMessageList> findMessages(@PathVariable("groupid") int groupId) {
-        Group group = repository.findMessageInGroup(groupId);
-        GroupMessage groupMessage = new GroupMessage();
-        groupMessage.setGroupId(group.getGroupId());
-        groupMessage.setMessages(group.getMessages());
-        List<GroupMessage> groups = new ArrayList<>();
-        groups.add(groupMessage);
-        return new ResponseEntity<>(new GroupMessageList(groups), HttpStatus.OK);
-    }
-
-    @RequestMapping(path = messagesId, method = RequestMethod.DELETE)
-    public ResponseEntity<IdStatus> deleteMessageBy(@PathVariable("groupid") int groupId, @PathVariable("messageid") int messageId) {
-        repository.deleteMessage(groupId, messageId);
-        return new ResponseEntity<>(new IdStatus(messageId, "delete was successful"), HttpStatus.OK);
-    }
-
-    @RequestMapping(path = messagesId, method = RequestMethod.PUT)
-    public ResponseEntity<IdStatus> updateMessageBy(@PathVariable("messageid") int messageId, @RequestBody MessageRequest messageRequest) {
-        Message message = new Message();
-        message.setText(messageRequest.getText());
-        message.setPriority(messageRequest.getPriority());
-        repository.updateMessage(messageId, message);
-        return new ResponseEntity<IdStatus>(new IdStatus(messageId, "update was successful"), HttpStatus.OK);
-    }
-
-    @RequestMapping(path = messagesId, method = RequestMethod.GET)
-    public ResponseEntity<GroupMessageList> findMessageBy(@PathVariable("groupid") int groupId, @PathVariable("messageid") int messageId) {
-        Group group = repository.findMessageInGroupBy(groupId, messageId);
-        GroupMessage groupMessage = new GroupMessage();
-        groupMessage.setGroupId(group.getGroupId());
-        groupMessage.setMessages(group.getMessages());
-        List<GroupMessage> groups = new ArrayList<>();
-        groups.add(groupMessage);
-        return new ResponseEntity<>(new GroupMessageList(groups), HttpStatus.OK);
-    }
 }

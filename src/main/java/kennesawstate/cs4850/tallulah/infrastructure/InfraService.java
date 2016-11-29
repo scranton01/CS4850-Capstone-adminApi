@@ -151,14 +151,14 @@ public class InfraService {
         return mapper.findChannelInGroupBy(groupId, deviceId);
     }
 
-    public int createMessage(int groupId, Message message) {
+    public int createMessage(int groupId, int deviceId, Message message) {
         mapper.createMessage(message);
-        mapper.addMessageToGroup(groupId);
+        mapper.addMessageToGroup(groupId, deviceId);
         return mapper.findLatestMessageId();
     }
 
-    public Group findMessageInGroup(int groupId) {
-        Group group = mapper.findMessageInGroup(groupId);
+    public Group findMessageInGroup(int groupId, int deviceId) {
+        Group group = mapper.findMessageInGroup(groupId, deviceId);
         group.setMessages(group.getMessages()
                 .stream()
                 .filter(i -> i.getMessageId() != 0)
@@ -175,7 +175,7 @@ public class InfraService {
         return mapper.updateMessage(messageId, message);
     }
 
-    public Group findMessageInGroupBy(int groupId, int messageId) {
-        return mapper.findMessageInGroupBy(groupId, messageId);
+    public Group findMessageInGroupBy(int groupId, int deviceId, int messageId) {
+        return mapper.findMessageInGroupBy(groupId, deviceId, messageId);
     }
 }

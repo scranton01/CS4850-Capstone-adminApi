@@ -373,7 +373,7 @@ documentation:
                   {
                     "status":"specified id doesn't exist"
                   } 
-  /{version}/groups/{groupid}/device/{deviceid}:
+  /{version}/groups/{groupid}/devices/{deviceid}:
     uriParameters:
       version:
         type: number
@@ -431,6 +431,176 @@ documentation:
                     "id":1,
                     "status":"delete was successful"
                   }
+  /{version}/groups/{groupid}/devices/{deviceid}/messages:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      groupid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+      deviceid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    post:
+        description: create new channels id
+        body:
+          application/json:
+            example: |
+              {
+                "text":"Your rent is due by 01/01/1111",  
+                "priority":1  
+              }
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"Create was successful."
+                  }    
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    get:
+        description: get device information for specified id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "devices": [
+                          {    
+                            "deviceId":1,
+                            "ownerId":1,
+                            "name":"resident1",
+                            "messages":[
+                            {
+                              "messageId":1,
+                              "text":"Your rent is due by 01/01/1111",  
+                              "priority":1                                  
+                            },
+                            {
+                              "messageId":2,
+                              "text":"There is an event on Wednesday",  
+                              "priority":2                                  
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+  /{version}/groups/{groupid}/devices/{deviceid}/messages/{messageid}:
+    uriParameters:
+      version:
+        type: number
+        description: version of current API
+        example: 1
+      groupid:
+        type: number
+        description: group id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+      messageid:
+        type: number
+        description: message id
+        example: 1
+        maximum: 999999999
+        minimum: 1
+    get:
+        description: get device information for specified id
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groups": [
+                      {    
+                        "groupId":1,
+                        "devices": [
+                          {    
+                            "deviceId":1,
+                            "ownerId":1,
+                            "name":"resident1",
+                            "messages":[
+                            {
+                              "messageId":1,
+                              "text":"Your rent is due by 01/01/1111",  
+                              "priority":1                                  
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    put:
+        description: update channel information
+        body:
+          application/json:
+            example: |
+              {
+                "text":"Your rent is due by 01/01/1111",  
+                "priority":1      
+              }
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"update was successful"
+                  }
+          400:
+            body:  
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
+    delete:
+        description: delete message information
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id":1,
+                    "status":"delete was successful"
+                  }
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status":"specified id doesn't exist"
+                  } 
   /{version}/groups/{groupid}/channels:
     uriParameters:
       version:
@@ -494,7 +664,7 @@ documentation:
                   {
                     "status":"specified id doesn't exist"
                   } 
-  /{version}/groups/{groupid}//channels/{channelid}:
+  /{version}/groups/{groupid}/channels/{channelid}:
     uriParameters:
       version:
         type: number
@@ -573,153 +743,6 @@ documentation:
                   } 
     delete:
         description: delete channel information
-        responses:
-          200:
-            body:
-              application/json:
-                example: |
-                  {
-                    "id":1,
-                    "status":"delete was successful"
-                  }
-          400:
-            body:
-              application/json:
-                example: |
-                  {
-                    "status":"specified id doesn't exist"
-                  } 
-  /{version}/groups/{groupid}/messages:
-    uriParameters:
-      version:
-        type: number
-        description: version of current API
-        example: 1
-      groupid:
-        type: number
-        description: group id
-        example: 1
-        maximum: 999999999
-        minimum: 1
-    post:
-        description: create new channels id
-        body:
-          application/json:
-            example: |
-              {
-                "text":"Your rent is due by 01/01/1111",  
-                "priority":1  
-              }
-        responses:
-          201:
-            body:
-              application/json:
-                example: |
-                  {
-                    "id":1,
-                    "status":"Create was successful."
-                  }    
-          400:
-            body:
-              application/json:
-                example: |
-                  {
-                    "status":"specified id doesn't exist"
-                  } 
-    get:
-        description: get device information for specified id
-        responses:
-          200:
-            body:
-              application/json:
-                example: |
-                  {
-                    "groups": [
-                      {    
-                        "groupId":1,
-                        "messages":[
-                          {
-                            "messageId":1,
-                            "text":"Your rent is due by 01/01/1111",  
-                            "priority":1                                  
-                          }
-                        ]
-                      }
-                    ]
-                  }
-  /{version}/groups/{groupid}/messages/{messageid}:
-    uriParameters:
-      version:
-        type: number
-        description: version of current API
-        example: 1
-      groupid:
-        type: number
-        description: group id
-        example: 1
-        maximum: 999999999
-        minimum: 1
-      messageid:
-        type: number
-        description: message id
-        example: 1
-        maximum: 999999999
-        minimum: 1
-    get:
-        description: get device information for specified id
-        responses:
-          200:
-            body:
-              application/json:
-                example: |
-                  {
-                    "groups": [
-                      {    
-                        "groupId":1,
-                        "messages":[
-                          {
-                            "messageId":1,
-                            "text":"Your rent is due by 01/01/1111",  
-                            "priority":1                                  
-                          }
-                        ]
-                      }
-                    ]
-                  } 
-          400:
-            body:
-              application/json:
-                example: |
-                  {
-                    "status":"specified id doesn't exist"
-                  } 
-    put:
-        description: update channel information
-        body:
-          application/json:
-            example: |
-              {
-                "text":"Your rent is due by 01/01/1111",  
-                "priority":1      
-              }
-        responses:
-          200:
-            body:
-              application/json:
-                example: |
-                  {
-                    "id":1,
-                    "status":"update was successful"
-                  }
-          400:
-            body:  
-              application/json:
-                example: |
-                  {
-                    "status":"specified id doesn't exist"
-                  } 
-    delete:
-        description: delete message information
         responses:
           200:
             body:

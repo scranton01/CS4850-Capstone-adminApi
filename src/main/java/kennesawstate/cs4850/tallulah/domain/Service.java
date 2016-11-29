@@ -149,12 +149,12 @@ public class Service implements Repository {
         return group;
     }
 
-    public int createMessage(int groupId, Message message) {
-        return infraService.createMessage(groupId, message);
+    public int createMessage(int groupId, int deviceId, Message message) {
+        return infraService.createMessage(groupId, deviceId, message);
     }
 
-    public Group findMessageInGroup(int groupId) {
-        return infraService.findMessageInGroup(groupId);
+    public Group findMessageInGroup(int groupId, int deviceId) {
+        return infraService.findMessageInGroup(groupId, deviceId);
     }
 
     public void deleteMessage(int groupId, int messageId) {
@@ -169,8 +169,8 @@ public class Service implements Repository {
         }
     }
 
-    public Group findMessageInGroupBy(int groupId, int messageId) {
-        Group group = infraService.findMessageInGroupBy(groupId, messageId);
+    public Group findMessageInGroupBy(int groupId, int deviceId, int messageId) {
+        Group group = infraService.findMessageInGroupBy(groupId, deviceId, messageId);
         if (group == null) {
             throw new NotFoundException();
         }
